@@ -9,14 +9,18 @@
         "vscode": {
             //コンテナ作成時にインストールする拡張機能を記載
             "extensions": [
-                //GitHub copilot
                 "GitHub.copilot",
-                "GitHub.copilot-chat"
+                "GitHub.copilot-chat",
+                "negokaz.zenn-editor"
             ],
             //VScodeの設定を記載
             "settings": {
-                //ファイルのオートセーブ
-                "files.autoSave": "afterDelay"
+                //mdファイルに画像を貼り付けた際の保存先を指定
+                //https://code.visualstudio.com/docs/languages/markdown#_inserting-images-and-links-to-files
+                "markdown.copyFiles.destination": {
+                    "/articles/**/*": "images/articles/${documentBaseName}/",
+                    "/books/**/*": "images/books/${documentBaseName}/"
+                }
             }
         }
     }
