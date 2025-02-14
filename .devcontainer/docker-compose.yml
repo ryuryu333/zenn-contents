@@ -1,0 +1,8 @@
+services:
+  zenn_contents:
+    build:
+      dockerfile: Dockerfile
+    tty: true
+    # zenn用のフォルダ全てをマウント
+    volumes:
+      - ../:/work/zenn_contents/

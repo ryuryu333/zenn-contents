@@ -1,0 +1,24 @@
+{
+    "name": "zenn_contents",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "zenn_contents",
+    //VScode接続時に開くフォルダを指定
+    "workspaceFolder": "/work/zenn_contents",
+    //VScodeの環境を指定
+    "customizations": {
+        "vscode": {
+            //コンテナ作成時にインストールする拡張機能を記載
+            "extensions": [
+                //GitHub copilot
+                "GitHub.copilot",
+                "GitHub.copilot-chat"
+            ],
+            //VScodeの設定を記載
+            "settings": {
+                //ファイルのオートセーブ
+                "files.autoSave": "afterDelay"
+            }
+        }
+    }
+
+}
