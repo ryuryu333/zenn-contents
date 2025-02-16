@@ -15,7 +15,8 @@
             ],
             //VScodeの設定を記載
             "settings": {
-                //mdファイルに画像を貼り付けた際の保存先を指定
+                //mdファイルに画像を貼り付けた際の保存先をzenn仕様に設定
+                //https://zenn.dev/zenn/articles/deploy-github-images
                 //https://code.visualstudio.com/docs/languages/markdown#_inserting-images-and-links-to-files
                 "markdown.copyFiles.destination": {
                     "/articles/**/*": "images/articles/${documentBaseName}/",
