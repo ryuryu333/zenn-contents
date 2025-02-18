@@ -8,6 +8,9 @@
 # 記事作成
 # slug_name ^[a-z0-9_-]{12,50}$
 npx zenn new:article --slug name
+
+# プレビュー
+
 ```
 ブラウザでのプレビュー
 [localhost:8000](localhost:8000)
