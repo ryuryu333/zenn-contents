@@ -7,23 +7,28 @@
     //VScodeの環境を指定
     "customizations": {
         "vscode": {
-            //コンテナ作成時にインストールする拡張機能を記載
+            //インストールする拡張機能を指定
             "extensions": [
                 "GitHub.copilot",
                 "GitHub.copilot-chat",
-                "negokaz.zenn-editor"
+                "negokaz.zenn-editor",
+                "nodamushi.udon"
             ],
             //VScodeの設定を記載
             "settings": {
-                //mdファイルに画像を貼り付けた際の保存先をzenn仕様に設定
-                //https://zenn.dev/zenn/articles/deploy-github-images
-                //https://code.visualstudio.com/docs/languages/markdown#_inserting-images-and-links-to-files
-                "markdown.copyFiles.destination": {
-                    "/articles/**/*": "images/articles/${documentBaseName}/",
-                    "/books/**/*": "images/books/${documentBaseName}/"
-                }
+                //udon拡張の設定
+                //ariclesディレクトリにある.mdファイルに画像を貼り付けた際
+                //workspace/image/aritcle_name/に画像を保存
+                //画像のリンクは相対リンクではなく、image/...で作成される（zenn 仕様対応）
+                "udon.baseDirectories": [
+                    ["articles/*.md", "${workspaceFolder}/images/$fileBasenameNoExtension"]
+                ],
+                "udon.rule": [
+                    ["articles/*.md", "![](/${relImage:${workspaceFolder}})"],
+                    ["*.md", "![](${relImage})"],
+                    ["*", "${relImage:${workspaceFolder}}"]
+                ]
             }
         }
     }
-
 }
