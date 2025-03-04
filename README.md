@@ -10,7 +10,7 @@
 npx zenn new:article --slug name
 
 # プレビュー
-
+npx zenn preview
 ```
 ブラウザでのプレビュー
 [localhost:8000](localhost:8000)
