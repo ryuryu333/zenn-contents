@@ -12,7 +12,8 @@
                 "GitHub.copilot",
                 "GitHub.copilot-chat",
                 "negokaz.zenn-editor",
-                "nodamushi.udon"
+                "nodamushi.udon",
+                "google.geminicodeassist"
             ],
             //VScodeの設定を記載
             "settings": {
