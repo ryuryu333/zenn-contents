@@ -1,6 +1,6 @@
 ---
 title: "C# xUnit を用いた単体テストの実装方法 Visual Studio 2022"
-emoji: "😺"
+emoji: "🌱"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [dotnet, csharp, 単体テスト, xunit]
 published: true
