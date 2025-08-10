@@ -1,0 +1,17 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "auto-run my command",
+            "type": "shell",
+            "command": "zenn preview",
+            "isBackground": true,
+            "presentation": {
+                "reveal": "never",
+                "panel": "new",
+                "focus": false
+            },
+            "runOptions": { "runOn": "folderOpen" }
+        }
+    ]
+}
