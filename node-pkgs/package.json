@@ -1,0 +1,11 @@
+{
+  "name": "zenn-cli-env",
+  "version": "1.0.0",
+  "private": "true",
+  "dependencies": {
+    "zenn-cli": "0.2.1",
+    "textlint": "15.2.2",
+    "textlint-rule-preset-ja-spacing": "2.4.3",
+    "textlint-rule-preset-ja-technical-writing": "12.0.2"
+  }
+}

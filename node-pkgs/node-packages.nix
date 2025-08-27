@@ -139,6 +139,15 @@ let
         sha512 = "zq24hfuAmmlNZvik0FLI58uE5sriN0WWsQzIlYnzSuKDAHFqJtBFrl/LfB1NLgJT5Y7dEBzaX4yAKqOPrcetaw==";
       };
     };
+    "@pkgjs/parseargs-0.11.0" = {
+      name = "_at_pkgjs_slash_parseargs";
+      packageName = "@pkgjs/parseargs";
+      version = "0.11.0";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/@pkgjs/parseargs/-/parseargs-0.11.0.tgz";
+        sha512 = "+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==";
+      };
+    };
     "@textlint-rule/textlint-rule-no-invalid-control-character-3.0.0" = {
       name = "_at_textlint-rule_slash_textlint-rule-no-invalid-control-character";
       packageName = "@textlint-rule/textlint-rule-no-invalid-control-character";
@@ -3244,10 +3253,10 @@ let
         sha512 = "HnLOCR3vjcY8beoNLtcjZ5/nxn2afmME6lhrDrebokqMap+XbeW8n9TXpPDOqdGK5qcI3oT0GKTW6wC7EMiVqA==";
       };
     };
-    "string-width-cjs-4.2.3" = {
+    "string-width-cjs-npm:string-width@4.2.3" = {
       name = "string-width-cjs";
       packageName = "string-width-cjs";
-      version = "4.2.3";
+      version = "npm:string-width@4.2.3";
       src = fetchurl {
         url = "https://registry.npmjs.org/string-width/-/string-width-4.2.3.tgz";
         sha512 = "wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==";
@@ -3298,10 +3307,10 @@ let
         sha512 = "iq6eVVI64nQQTRYq2KtEg2d2uU7LElhTJwsH4YzIHZshxlgZms/wIc4VoDQTlG/IvVIrBKG06CrZnp0qv7hkcQ==";
       };
     };
-    "strip-ansi-cjs-6.0.1" = {
+    "strip-ansi-cjs-npm:strip-ansi@6.0.1" = {
       name = "strip-ansi-cjs";
       packageName = "strip-ansi-cjs";
-      version = "6.0.1";
+      version = "npm:strip-ansi@6.0.1";
       src = fetchurl {
         url = "https://registry.npmjs.org/strip-ansi/-/strip-ansi-6.0.1.tgz";
         sha512 = "Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==";
@@ -3341,6 +3350,15 @@ let
       src = fetchurl {
         url = "https://registry.npmjs.org/text-table/-/text-table-0.2.0.tgz";
         sha512 = "N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==";
+      };
+    };
+    "textlint-15.2.2" = {
+      name = "textlint";
+      packageName = "textlint";
+      version = "15.2.2";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/textlint/-/textlint-15.2.2.tgz";
+        sha512 = "0V02Lvs7GJfXPNJgBVhayysW+9qe0bZVmyD8FrYzkW70xZcSoVK4Hdl6825wpQqn8KgdB171WNYlWq5FPEAPgg==";
       };
     };
     "textlint-rule-helper-2.5.0" = {
@@ -3593,6 +3611,24 @@ let
       src = fetchurl {
         url = "https://registry.npmjs.org/textlint-rule-no-zero-width-spaces/-/textlint-rule-no-zero-width-spaces-1.0.1.tgz";
         sha512 = "AkxpzBILGB4YsXddzHx2xqpXmqMv5Yd+PQm4anUV+ADSJuwLP1Jd6yHf/LOtu9j3ps8K3XM9vQrXRK73z0bU3A==";
+      };
+    };
+    "textlint-rule-preset-ja-spacing-2.4.3" = {
+      name = "textlint-rule-preset-ja-spacing";
+      packageName = "textlint-rule-preset-ja-spacing";
+      version = "2.4.3";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/textlint-rule-preset-ja-spacing/-/textlint-rule-preset-ja-spacing-2.4.3.tgz";
+        sha512 = "WAiWY9TOE8/bRdl14XJdjkPQcV0hLS4O+PCUYU1yxXmJhZ8V3ciw2GYqpA9GL73qAxL25UD6mkf1yfz6aJ4qSA==";
+      };
+    };
+    "textlint-rule-preset-ja-technical-writing-12.0.2" = {
+      name = "textlint-rule-preset-ja-technical-writing";
+      packageName = "textlint-rule-preset-ja-technical-writing";
+      version = "12.0.2";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/textlint-rule-preset-ja-technical-writing/-/textlint-rule-preset-ja-technical-writing-12.0.2.tgz";
+        sha512 = "BBVY6oA5V799k5wRfP+gCpDHsp6vWjWX2UT+/KLlAFFsNdmRB8Z6qyOnqiOjfzmLGIRgoMcPI1dXj5upOqnD6Q==";
       };
     };
     "textlint-rule-preset-jtf-style-3.0.2" = {
@@ -3964,10 +4000,10 @@ let
         sha512 = "si7QWI6zUMq56bESFvagtmzMdGOtoxfR+Sez11Mobfc7tm+VkUckk9bW2UeffTGVUbOksxmSw0AA2gs8g71NCQ==";
       };
     };
-    "wrap-ansi-cjs-7.0.0" = {
+    "wrap-ansi-cjs-npm:wrap-ansi@7.0.0" = {
       name = "wrap-ansi-cjs";
       packageName = "wrap-ansi-cjs";
-      version = "7.0.0";
+      version = "npm:wrap-ansi@7.0.0";
       src = fetchurl {
         url = "https://registry.npmjs.org/wrap-ansi/-/wrap-ansi-7.0.0.tgz";
         sha512 = "YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==";
@@ -3998,6 +4034,15 @@ let
       src = fetchurl {
         url = "https://registry.npmjs.org/xtend/-/xtend-4.0.2.tgz";
         sha512 = "LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==";
+      };
+    };
+    "zenn-cli-0.2.1" = {
+      name = "zenn-cli";
+      packageName = "zenn-cli";
+      version = "0.2.1";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/zenn-cli/-/zenn-cli-0.2.1.tgz";
+        sha512 = "8ipbiIHOGIK1Gp1ifNi4rKY3+YohcXCrQCuz6w78OQ532WoU2xMiV0hFWRR/obmuPYwbiGWd/Xt/A4tYCaOHTA==";
       };
     };
     "zlibjs-0.3.1" = {
@@ -4037,21 +4082,19 @@ let
       };
     };
   };
-in
-{
-  "textlint-15.2.2" = nodeEnv.buildNodePackage {
-    name = "textlint";
-    packageName = "textlint";
-    version = "15.2.2";
-    src = fetchurl {
-      url = "https://registry.npmjs.org/textlint/-/textlint-15.2.2.tgz";
-      sha512 = "0V02Lvs7GJfXPNJgBVhayysW+9qe0bZVmyD8FrYzkW70xZcSoVK4Hdl6825wpQqn8KgdB171WNYlWq5FPEAPgg==";
-    };
+  args = {
+    name = "zenn-cli-env";
+    packageName = "zenn-cli-env";
+    version = "1.0.0";
+    src = ./.;
     dependencies = [
       sources."@azu/format-text-1.0.2"
       sources."@azu/style-format-1.0.1"
       sources."@babel/code-frame-7.27.1"
+      sources."@babel/helper-string-parser-7.27.1"
       sources."@babel/helper-validator-identifier-7.27.1"
+      sources."@babel/parser-7.28.3"
+      sources."@babel/types-7.28.2"
       (sources."@isaacs/cliui-8.0.2" // {
         dependencies = [
           sources."ansi-regex-6.2.0"
@@ -4061,7 +4104,15 @@ in
         ];
       })
       sources."@keyv/serialize-1.1.0"
+      sources."@kvs/env-2.2.0"
+      sources."@kvs/indexeddb-2.1.4"
+      sources."@kvs/node-localstorage-2.2.0"
+      sources."@kvs/storage-2.1.4"
+      sources."@kvs/types-2.1.4"
       sources."@modelcontextprotocol/sdk-1.17.4"
+      sources."@pkgjs/parseargs-0.11.0"
+      sources."@textlint-rule/textlint-rule-no-invalid-control-character-3.0.0"
+      sources."@textlint-rule/textlint-rule-no-unmatched-pair-2.0.4"
       sources."@textlint/ast-node-types-15.2.2"
       sources."@textlint/ast-tester-15.2.2"
       sources."@textlint/ast-traverse-15.2.2"
@@ -4072,6 +4123,7 @@ in
       sources."@textlint/linter-formatter-15.2.2"
       sources."@textlint/markdown-to-ast-15.2.2"
       sources."@textlint/module-interop-15.2.2"
+      sources."@textlint/regexp-string-matcher-2.0.2"
       sources."@textlint/resolver-15.2.2"
       sources."@textlint/source-code-fixer-15.2.2"
       sources."@textlint/text-to-ast-15.2.2"
@@ -4084,10 +4136,18 @@ in
       sources."@types/unist-2.0.11"
       sources."accepts-2.0.0"
       sources."ajv-6.12.6"
+      sources."analyze-desumasu-dearu-5.0.2"
       sources."ansi-regex-5.0.1"
       sources."ansi-styles-4.3.0"
+      sources."app-root-path-3.1.0"
       sources."argparse-1.0.10"
+      sources."array-buffer-byte-length-1.0.2"
+      sources."arraybuffer.prototype.slice-1.0.4"
+      sources."assign-symbols-1.0.0"
       sources."astral-regex-2.0.0"
+      sources."async-2.6.4"
+      sources."async-function-1.0.0"
+      sources."available-typed-arrays-1.0.7"
       sources."bail-1.0.5"
       sources."balanced-match-1.0.2"
       sources."body-parser-2.2.0"
@@ -4095,6 +4155,7 @@ in
       sources."brace-expansion-2.0.2"
       sources."bytes-3.1.2"
       sources."cacheable-1.10.4"
+      sources."call-bind-1.0.8"
       sources."call-bind-apply-helpers-1.0.2"
       sources."call-bound-1.0.4"
       sources."ccount-1.1.0"
@@ -4103,8 +4164,16 @@ in
       sources."character-entities-legacy-1.1.4"
       sources."character-reference-invalid-1.1.4"
       sources."charenc-0.0.2"
+      (sources."check-ends-with-period-3.0.2" // {
+        dependencies = [
+          sources."emoji-regex-10.4.0"
+        ];
+      })
+      sources."clone-regexp-2.2.0"
       sources."color-convert-2.0.1"
       sources."color-name-1.1.4"
+      sources."comma-separated-tokens-1.0.8"
+      sources."commandpost-1.4.0"
       sources."content-disposition-1.0.0"
       sources."content-type-1.0.5"
       sources."cookie-0.7.2"
@@ -4112,27 +4181,39 @@ in
       sources."cors-2.8.5"
       sources."cross-spawn-7.0.6"
       sources."crypt-0.0.2"
+      sources."data-view-buffer-1.0.2"
+      sources."data-view-byte-length-1.0.2"
+      sources."data-view-byte-offset-1.0.1"
       sources."debug-4.4.1"
       sources."deep-is-0.1.4"
+      sources."define-data-property-1.1.4"
+      sources."define-properties-1.2.1"
+      sources."define-property-2.0.2"
       sources."depd-2.0.0"
       sources."diff-5.2.0"
+      sources."doublearray-0.0.2"
       sources."dunder-proto-1.0.1"
       sources."eastasianwidth-0.2.0"
       sources."ee-first-1.1.1"
       sources."emoji-regex-8.0.0"
       sources."encodeurl-2.0.0"
+      sources."es-abstract-1.24.0"
       sources."es-define-property-1.0.1"
       sources."es-errors-1.3.0"
       sources."es-object-atoms-1.1.1"
+      sources."es-set-tostringtag-2.1.0"
+      sources."es-to-primitive-1.3.0"
       sources."escape-html-1.0.3"
       sources."escape-string-regexp-4.0.0"
       sources."esprima-4.0.1"
       sources."etag-1.8.1"
       sources."eventsource-3.0.7"
       sources."eventsource-parser-3.0.5"
+      sources."execall-2.0.0"
       sources."express-5.1.0"
       sources."express-rate-limit-7.5.1"
       sources."extend-3.0.2"
+      sources."extend-shallow-3.0.2"
       sources."fast-deep-equal-3.1.3"
       sources."fast-equals-4.0.3"
       sources."fast-json-stable-stringify-2.1.0"
@@ -4144,18 +4225,31 @@ in
       sources."find-up-simple-1.0.1"
       sources."flat-cache-6.1.13"
       sources."flatted-3.3.3"
+      sources."for-each-0.3.5"
       sources."foreground-child-3.3.1"
       sources."format-0.2.2"
       sources."forwarded-0.2.0"
       sources."fresh-2.0.0"
       sources."function-bind-1.1.2"
+      sources."function.prototype.name-1.1.8"
+      sources."functions-have-names-1.2.3"
       sources."get-intrinsic-1.3.0"
       sources."get-proto-1.0.1"
+      sources."get-symbol-description-1.1.0"
       sources."glob-10.4.5"
+      sources."globalthis-1.0.4"
       sources."gopd-1.2.0"
+      sources."graceful-fs-4.2.11"
+      sources."has-bigints-1.1.0"
       sources."has-flag-4.0.0"
+      sources."has-property-descriptors-1.0.2"
+      sources."has-proto-1.2.0"
       sources."has-symbols-1.1.0"
+      sources."has-tostringtag-1.0.2"
       sources."hasown-2.0.2"
+      sources."hast-util-from-parse5-5.0.3"
+      sources."hast-util-parse-selector-2.2.5"
+      sources."hastscript-5.1.2"
       sources."hookified-1.12.0"
       sources."hosted-git-info-7.0.2"
       (sources."http-errors-2.0.0" // {
@@ -4164,36 +4258,71 @@ in
         ];
       })
       sources."iconv-lite-0.6.3"
+      sources."imurmurhash-0.1.4"
       sources."index-to-position-1.1.0"
       sources."inherits-2.0.4"
+      sources."internal-slot-1.1.0"
       sources."ipaddr.js-1.9.1"
+      sources."is-accessor-descriptor-1.0.1"
       sources."is-alphabetical-1.0.4"
       sources."is-alphanumerical-1.0.4"
-      sources."is-buffer-2.0.5"
+      sources."is-array-buffer-3.0.5"
+      sources."is-async-function-2.1.1"
+      sources."is-bigint-1.1.0"
+      sources."is-boolean-object-1.2.2"
+      sources."is-buffer-1.1.6"
+      sources."is-callable-1.2.7"
+      sources."is-data-descriptor-1.0.1"
+      sources."is-data-view-1.0.2"
+      sources."is-date-object-1.1.0"
       sources."is-decimal-1.0.4"
+      sources."is-descriptor-1.0.3"
+      sources."is-extendable-1.0.1"
+      sources."is-finalizationregistry-1.1.1"
       sources."is-fullwidth-code-point-3.0.0"
+      sources."is-generator-function-1.1.0"
       sources."is-hexadecimal-1.0.4"
+      sources."is-map-2.0.3"
+      sources."is-negative-zero-2.0.3"
+      sources."is-number-object-1.1.1"
       sources."is-plain-obj-2.1.0"
+      sources."is-plain-object-2.0.4"
       sources."is-promise-4.0.0"
+      sources."is-regex-1.2.1"
+      sources."is-regexp-2.1.0"
+      sources."is-set-2.0.3"
+      sources."is-shared-array-buffer-1.0.4"
+      sources."is-string-1.1.1"
+      sources."is-symbol-1.1.1"
+      sources."is-typed-array-1.1.15"
+      sources."is-weakmap-2.0.2"
+      sources."is-weakref-1.1.1"
+      sources."is-weakset-2.0.4"
+      sources."isarray-2.0.5"
       sources."isexe-2.0.0"
+      sources."isobject-3.0.1"
       sources."jackspeak-3.4.3"
+      sources."japanese-numerals-to-number-1.0.2"
       sources."js-tokens-4.0.0"
       sources."js-yaml-3.14.1"
       sources."json-schema-traverse-0.4.1"
       sources."json5-2.2.3"
       sources."keyv-5.5.0"
+      sources."kuromoji-0.1.2"
+      sources."kuromojin-3.0.1"
       sources."levn-0.4.1"
       sources."lodash-4.17.21"
+      sources."lodash.sortby-4.7.0"
       sources."lodash.truncate-4.4.2"
+      sources."lodash.uniq-4.5.0"
+      sources."lodash.uniqwith-4.5.0"
       sources."longest-streak-2.0.4"
       sources."lru-cache-10.4.3"
+      sources."lru_map-0.4.1"
       sources."markdown-table-2.0.0"
+      sources."match-index-1.0.3"
       sources."math-intrinsics-1.1.0"
-      (sources."md5-2.3.0" // {
-        dependencies = [
-          sources."is-buffer-1.1.6"
-        ];
-      })
+      sources."md5-2.3.0"
       sources."mdast-util-find-and-replace-1.1.1"
       sources."mdast-util-footnote-0.1.7"
       sources."mdast-util-from-markdown-0.8.5"
@@ -4220,18 +4349,31 @@ in
       sources."mime-types-3.0.1"
       sources."minimatch-9.0.5"
       sources."minipass-7.1.2"
+      (sources."moji-0.5.1" // {
+        dependencies = [
+          sources."object-assign-3.0.0"
+        ];
+      })
+      sources."morpheme-match-2.0.4"
+      sources."morpheme-match-all-2.0.5"
+      sources."morpheme-match-textlint-2.0.6"
       sources."ms-2.1.3"
       sources."negotiator-1.0.0"
       sources."neotraverse-0.6.18"
+      sources."node-localstorage-2.2.1"
       sources."normalize-package-data-6.0.2"
       sources."object-assign-4.1.1"
       sources."object-inspect-1.13.4"
+      sources."object-keys-1.1.1"
+      sources."object.assign-4.1.7"
       sources."on-finished-2.4.1"
       sources."once-1.4.0"
       sources."optionator-0.9.4"
+      sources."own-keys-1.0.1"
       sources."package-json-from-dist-1.0.1"
       sources."parse-entities-2.0.0"
       sources."parse-json-8.3.0"
+      sources."parse5-5.1.1"
       sources."parseurl-1.3.3"
       sources."path-key-3.1.1"
       sources."path-scurry-1.11.1"
@@ -4240,7 +4382,14 @@ in
       sources."picocolors-1.1.1"
       sources."pkce-challenge-5.0.0"
       sources."pluralize-2.0.0"
+      sources."possible-typed-array-names-1.1.0"
       sources."prelude-ls-1.2.1"
+      (sources."prh-5.4.4" // {
+        dependencies = [
+          sources."diff-4.0.2"
+        ];
+      })
+      sources."property-information-5.6.0"
       sources."proxy-addr-2.0.7"
       sources."punycode-2.3.1"
       sources."qs-6.14.0"
@@ -4254,349 +4403,6 @@ in
       })
       sources."read-package-up-11.0.0"
       sources."read-pkg-9.0.1"
-      sources."remark-footnotes-3.0.0"
-      sources."remark-frontmatter-3.0.0"
-      sources."remark-gfm-1.0.0"
-      sources."remark-parse-9.0.0"
-      sources."repeat-string-1.6.1"
-      sources."require-from-string-2.0.2"
-      sources."router-2.2.0"
-      sources."safe-buffer-5.2.1"
-      sources."safer-buffer-2.1.2"
-      sources."semver-7.7.2"
-      sources."send-1.2.0"
-      sources."serve-static-2.2.0"
-      sources."setprototypeof-1.2.0"
-      sources."shebang-command-2.0.0"
-      sources."shebang-regex-3.0.0"
-      sources."side-channel-1.1.0"
-      sources."side-channel-list-1.0.0"
-      sources."side-channel-map-1.0.1"
-      sources."side-channel-weakmap-1.0.2"
-      sources."signal-exit-4.1.0"
-      sources."slice-ansi-4.0.0"
-      sources."spdx-correct-3.2.0"
-      sources."spdx-exceptions-2.5.0"
-      sources."spdx-expression-parse-3.0.1"
-      sources."spdx-license-ids-3.0.22"
-      sources."sprintf-js-1.0.3"
-      sources."statuses-2.0.2"
-      sources."string-width-4.2.3"
-      sources."string-width-cjs-4.2.3"
-      sources."strip-ansi-6.0.1"
-      sources."strip-ansi-cjs-6.0.1"
-      sources."structured-source-4.0.0"
-      sources."supports-color-7.2.0"
-      (sources."table-6.9.0" // {
-        dependencies = [
-          sources."ajv-8.17.1"
-          sources."json-schema-traverse-1.0.0"
-        ];
-      })
-      sources."text-table-0.2.0"
-      sources."toidentifier-1.0.1"
-      sources."trough-1.0.5"
-      sources."type-check-0.4.0"
-      sources."type-fest-4.41.0"
-      sources."type-is-2.0.1"
-      sources."unicorn-magic-0.1.0"
-      sources."unified-9.2.2"
-      sources."unist-util-is-4.1.0"
-      sources."unist-util-stringify-position-2.0.3"
-      sources."unist-util-visit-parents-3.1.1"
-      sources."unpipe-1.0.0"
-      sources."uri-js-4.4.1"
-      sources."validate-npm-package-license-3.0.4"
-      sources."vary-1.1.2"
-      sources."vfile-4.2.1"
-      sources."vfile-message-2.0.4"
-      sources."which-2.0.2"
-      sources."word-wrap-1.2.5"
-      (sources."wrap-ansi-8.1.0" // {
-        dependencies = [
-          sources."ansi-regex-6.2.0"
-          sources."ansi-styles-6.2.1"
-          sources."emoji-regex-9.2.2"
-          sources."string-width-5.1.2"
-          sources."strip-ansi-7.1.0"
-        ];
-      })
-      sources."wrap-ansi-cjs-7.0.0"
-      sources."wrappy-1.0.2"
-      sources."zod-3.25.76"
-      sources."zod-to-json-schema-3.24.6"
-      sources."zwitch-1.0.5"
-    ];
-    buildInputs = globalBuildInputs;
-    meta = {
-      description = "The pluggable linting tool for natural language.";
-      homepage = "https://github.com/textlint/textlint/";
-      license = "MIT";
-    };
-    production = true;
-    bypassCache = true;
-    reconstructLock = true;
-  };
-  "textlint-rule-preset-ja-spacing-2.4.3" = nodeEnv.buildNodePackage {
-    name = "textlint-rule-preset-ja-spacing";
-    packageName = "textlint-rule-preset-ja-spacing";
-    version = "2.4.3";
-    src = fetchurl {
-      url = "https://registry.npmjs.org/textlint-rule-preset-ja-spacing/-/textlint-rule-preset-ja-spacing-2.4.3.tgz";
-      sha512 = "WAiWY9TOE8/bRdl14XJdjkPQcV0hLS4O+PCUYU1yxXmJhZ8V3ciw2GYqpA9GL73qAxL25UD6mkf1yfz6aJ4qSA==";
-    };
-    dependencies = [
-      sources."@textlint/ast-node-types-15.2.2"
-      sources."@textlint/regexp-string-matcher-2.0.2"
-      sources."@types/unist-2.0.11"
-      sources."boundary-2.0.0"
-      sources."call-bind-1.0.8"
-      sources."call-bind-apply-helpers-1.0.2"
-      sources."define-data-property-1.1.4"
-      sources."define-properties-1.2.1"
-      sources."dunder-proto-1.0.1"
-      sources."es-define-property-1.0.1"
-      sources."es-errors-1.3.0"
-      sources."es-object-atoms-1.1.1"
-      sources."escape-string-regexp-4.0.0"
-      sources."function-bind-1.1.2"
-      sources."functions-have-names-1.2.3"
-      sources."get-intrinsic-1.3.0"
-      sources."get-proto-1.0.1"
-      sources."gopd-1.2.0"
-      sources."has-property-descriptors-1.0.2"
-      sources."has-symbols-1.1.0"
-      sources."hasown-2.0.2"
-      sources."lodash.sortby-4.7.0"
-      sources."lodash.uniq-4.5.0"
-      sources."lodash.uniqwith-4.5.0"
-      sources."match-index-1.0.3"
-      sources."math-intrinsics-1.1.0"
-      sources."object-keys-1.1.1"
-      sources."regexp.prototype.flags-1.5.4"
-      sources."regx-1.0.4"
-      sources."set-function-length-1.2.2"
-      sources."set-function-name-2.0.2"
-      sources."structured-source-4.0.0"
-      sources."textlint-rule-helper-2.5.0"
-      sources."textlint-rule-ja-nakaguro-or-halfwidth-space-between-katakana-2.4.3"
-      sources."textlint-rule-ja-no-space-around-parentheses-2.4.2"
-      sources."textlint-rule-ja-no-space-between-full-width-2.4.2"
-      sources."textlint-rule-ja-space-after-exclamation-2.4.2"
-      sources."textlint-rule-ja-space-after-question-2.4.2"
-      sources."textlint-rule-ja-space-around-code-2.4.2"
-      sources."textlint-rule-ja-space-around-link-2.4.2"
-      sources."textlint-rule-ja-space-between-half-and-full-width-2.4.2"
-      sources."unist-util-is-4.1.0"
-      sources."unist-util-visit-2.0.3"
-      sources."unist-util-visit-parents-3.1.1"
-    ];
-    buildInputs = globalBuildInputs;
-    meta = {
-      description = "textlint-rule-preset-ja-spacingのルールプリセット";
-      homepage = "https://github.com/textlint-ja/textlint-rule-preset-ja-spacing";
-      license = "MIT";
-    };
-    production = true;
-    bypassCache = true;
-    reconstructLock = true;
-  };
-  "textlint-rule-preset-ja-technical-writing-12.0.2" = nodeEnv.buildNodePackage {
-    name = "textlint-rule-preset-ja-technical-writing";
-    packageName = "textlint-rule-preset-ja-technical-writing";
-    version = "12.0.2";
-    src = fetchurl {
-      url = "https://registry.npmjs.org/textlint-rule-preset-ja-technical-writing/-/textlint-rule-preset-ja-technical-writing-12.0.2.tgz";
-      sha512 = "BBVY6oA5V799k5wRfP+gCpDHsp6vWjWX2UT+/KLlAFFsNdmRB8Z6qyOnqiOjfzmLGIRgoMcPI1dXj5upOqnD6Q==";
-    };
-    dependencies = [
-      sources."@babel/helper-string-parser-7.27.1"
-      sources."@babel/helper-validator-identifier-7.27.1"
-      sources."@babel/parser-7.28.3"
-      sources."@babel/types-7.28.2"
-      sources."@kvs/env-2.2.0"
-      sources."@kvs/indexeddb-2.1.4"
-      sources."@kvs/node-localstorage-2.2.0"
-      sources."@kvs/storage-2.1.4"
-      sources."@kvs/types-2.1.4"
-      sources."@textlint-rule/textlint-rule-no-invalid-control-character-3.0.0"
-      sources."@textlint-rule/textlint-rule-no-unmatched-pair-2.0.4"
-      sources."@textlint/ast-node-types-13.4.1"
-      sources."@textlint/ast-tester-13.4.1"
-      sources."@textlint/ast-traverse-13.4.1"
-      sources."@textlint/feature-flag-13.4.1"
-      sources."@textlint/kernel-13.4.1"
-      (sources."@textlint/markdown-to-ast-13.4.1" // {
-        dependencies = [
-          sources."unified-9.2.2"
-        ];
-      })
-      sources."@textlint/module-interop-14.8.4"
-      sources."@textlint/regexp-string-matcher-1.1.1"
-      sources."@textlint/source-code-fixer-13.4.1"
-      sources."@textlint/text-to-ast-13.4.1"
-      sources."@textlint/textlint-plugin-markdown-13.4.1"
-      sources."@textlint/textlint-plugin-text-13.4.1"
-      sources."@textlint/types-13.4.1"
-      sources."@textlint/utils-13.4.1"
-      sources."@types/mdast-3.0.15"
-      sources."@types/unist-2.0.11"
-      sources."analyze-desumasu-dearu-5.0.2"
-      sources."app-root-path-3.1.0"
-      sources."argparse-1.0.10"
-      sources."array-buffer-byte-length-1.0.2"
-      sources."arraybuffer.prototype.slice-1.0.4"
-      sources."assign-symbols-1.0.0"
-      sources."async-2.6.4"
-      sources."async-function-1.0.0"
-      sources."available-typed-arrays-1.0.7"
-      sources."bail-1.0.5"
-      sources."boundary-2.0.0"
-      sources."call-bind-1.0.8"
-      sources."call-bind-apply-helpers-1.0.2"
-      sources."call-bound-1.0.4"
-      sources."ccount-1.1.0"
-      sources."character-entities-1.2.4"
-      sources."character-entities-legacy-1.1.4"
-      sources."character-reference-invalid-1.1.4"
-      sources."check-ends-with-period-3.0.2"
-      sources."clone-regexp-2.2.0"
-      sources."comma-separated-tokens-1.0.8"
-      sources."commandpost-1.4.0"
-      sources."data-view-buffer-1.0.2"
-      sources."data-view-byte-length-1.0.2"
-      sources."data-view-byte-offset-1.0.1"
-      sources."debug-4.4.1"
-      sources."define-data-property-1.1.4"
-      sources."define-properties-1.2.1"
-      sources."define-property-2.0.2"
-      sources."diff-4.0.2"
-      sources."doublearray-0.0.2"
-      sources."dunder-proto-1.0.1"
-      sources."emoji-regex-10.4.0"
-      sources."es-abstract-1.24.0"
-      sources."es-define-property-1.0.1"
-      sources."es-errors-1.3.0"
-      sources."es-object-atoms-1.1.1"
-      sources."es-set-tostringtag-2.1.0"
-      sources."es-to-primitive-1.3.0"
-      sources."escape-string-regexp-2.0.0"
-      sources."esprima-4.0.1"
-      sources."execall-2.0.0"
-      sources."extend-3.0.2"
-      sources."extend-shallow-3.0.2"
-      sources."fast-equals-4.0.3"
-      sources."fault-1.0.4"
-      sources."for-each-0.3.5"
-      sources."format-0.2.2"
-      sources."function-bind-1.1.2"
-      sources."function.prototype.name-1.1.8"
-      sources."functions-have-names-1.2.3"
-      sources."get-intrinsic-1.3.0"
-      sources."get-proto-1.0.1"
-      sources."get-symbol-description-1.1.0"
-      sources."globalthis-1.0.4"
-      sources."gopd-1.2.0"
-      sources."graceful-fs-4.2.11"
-      sources."has-bigints-1.1.0"
-      sources."has-property-descriptors-1.0.2"
-      sources."has-proto-1.2.0"
-      sources."has-symbols-1.1.0"
-      sources."has-tostringtag-1.0.2"
-      sources."hasown-2.0.2"
-      sources."hast-util-from-parse5-5.0.3"
-      sources."hast-util-parse-selector-2.2.5"
-      sources."hastscript-5.1.2"
-      sources."imurmurhash-0.1.4"
-      sources."internal-slot-1.1.0"
-      sources."is-accessor-descriptor-1.0.1"
-      sources."is-alphabetical-1.0.4"
-      sources."is-alphanumerical-1.0.4"
-      sources."is-array-buffer-3.0.5"
-      sources."is-async-function-2.1.1"
-      sources."is-bigint-1.1.0"
-      sources."is-boolean-object-1.2.2"
-      sources."is-buffer-2.0.5"
-      sources."is-callable-1.2.7"
-      sources."is-data-descriptor-1.0.1"
-      sources."is-data-view-1.0.2"
-      sources."is-date-object-1.1.0"
-      sources."is-decimal-1.0.4"
-      sources."is-descriptor-1.0.3"
-      sources."is-extendable-1.0.1"
-      sources."is-finalizationregistry-1.1.1"
-      sources."is-generator-function-1.1.0"
-      sources."is-hexadecimal-1.0.4"
-      sources."is-map-2.0.3"
-      sources."is-negative-zero-2.0.3"
-      sources."is-number-object-1.1.1"
-      sources."is-plain-obj-2.1.0"
-      sources."is-plain-object-2.0.4"
-      sources."is-regex-1.2.1"
-      sources."is-regexp-2.1.0"
-      sources."is-set-2.0.3"
-      sources."is-shared-array-buffer-1.0.4"
-      sources."is-string-1.1.1"
-      sources."is-symbol-1.1.1"
-      sources."is-typed-array-1.1.15"
-      sources."is-weakmap-2.0.2"
-      sources."is-weakref-1.1.1"
-      sources."is-weakset-2.0.4"
-      sources."isarray-2.0.5"
-      sources."isobject-3.0.1"
-      sources."japanese-numerals-to-number-1.0.2"
-      sources."js-yaml-3.14.1"
-      sources."kuromoji-0.1.2"
-      sources."kuromojin-3.0.1"
-      sources."lodash-4.17.21"
-      sources."lodash.sortby-4.7.0"
-      sources."lodash.uniq-4.5.0"
-      sources."lodash.uniqwith-4.5.0"
-      sources."longest-streak-2.0.4"
-      sources."lru_map-0.4.1"
-      sources."markdown-table-2.0.0"
-      sources."match-index-1.0.3"
-      sources."math-intrinsics-1.1.0"
-      (sources."mdast-util-find-and-replace-1.1.1" // {
-        dependencies = [
-          sources."escape-string-regexp-4.0.0"
-        ];
-      })
-      sources."mdast-util-footnote-0.1.7"
-      sources."mdast-util-from-markdown-0.8.5"
-      sources."mdast-util-frontmatter-0.2.0"
-      sources."mdast-util-gfm-0.1.2"
-      sources."mdast-util-gfm-autolink-literal-0.1.3"
-      sources."mdast-util-gfm-strikethrough-0.2.3"
-      sources."mdast-util-gfm-table-0.1.6"
-      sources."mdast-util-gfm-task-list-item-0.1.6"
-      sources."mdast-util-to-markdown-0.6.5"
-      sources."mdast-util-to-string-2.0.0"
-      sources."micromark-2.11.4"
-      sources."micromark-extension-footnote-0.3.2"
-      sources."micromark-extension-frontmatter-0.2.2"
-      sources."micromark-extension-gfm-0.3.3"
-      sources."micromark-extension-gfm-autolink-literal-0.5.7"
-      sources."micromark-extension-gfm-strikethrough-0.6.5"
-      sources."micromark-extension-gfm-table-0.4.3"
-      sources."micromark-extension-gfm-tagfilter-0.3.0"
-      sources."micromark-extension-gfm-task-list-item-0.3.3"
-      sources."moji-0.5.1"
-      sources."morpheme-match-2.0.4"
-      sources."morpheme-match-all-2.0.5"
-      sources."morpheme-match-textlint-2.0.6"
-      sources."ms-2.1.3"
-      sources."node-localstorage-2.2.1"
-      sources."object-assign-3.0.0"
-      sources."object-inspect-1.13.4"
-      sources."object-keys-1.1.1"
-      sources."object.assign-4.1.7"
-      sources."own-keys-1.0.1"
-      sources."parse-entities-2.0.0"
-      sources."parse5-5.1.1"
-      sources."possible-typed-array-names-1.1.0"
-      sources."prh-5.4.4"
-      sources."property-information-5.6.0"
       sources."reflect.getprototypeof-1.0.10"
       sources."regex-not-1.0.2"
       sources."regexp.prototype.flags-1.5.4"
@@ -4607,38 +4413,91 @@ in
       sources."remark-gfm-1.0.0"
       sources."remark-parse-9.0.0"
       sources."repeat-string-1.6.1"
+      sources."require-from-string-2.0.2"
       sources."ret-0.1.15"
+      sources."router-2.2.0"
       sources."safe-array-concat-1.1.3"
+      sources."safe-buffer-5.2.1"
       sources."safe-push-apply-1.0.0"
       sources."safe-regex-1.1.0"
       sources."safe-regex-test-1.1.0"
-      sources."sentence-splitter-5.0.0"
+      sources."safer-buffer-2.1.2"
+      sources."semver-7.7.2"
+      sources."send-1.2.0"
+      (sources."sentence-splitter-5.0.0" // {
+        dependencies = [
+          sources."@textlint/ast-node-types-13.4.1"
+        ];
+      })
+      sources."serve-static-2.2.0"
       sources."set-function-length-1.2.2"
       sources."set-function-name-2.0.2"
       sources."set-proto-1.0.0"
+      sources."setprototypeof-1.2.0"
+      sources."shebang-command-2.0.0"
+      sources."shebang-regex-3.0.0"
       sources."side-channel-1.1.0"
       sources."side-channel-list-1.0.0"
       sources."side-channel-map-1.0.1"
       sources."side-channel-weakmap-1.0.2"
+      sources."signal-exit-4.1.0"
+      sources."slice-ansi-4.0.0"
       sources."slide-1.1.6"
       sources."space-separated-tokens-1.1.5"
+      sources."spdx-correct-3.2.0"
+      sources."spdx-exceptions-2.5.0"
+      sources."spdx-expression-parse-3.0.1"
+      sources."spdx-license-ids-3.0.22"
       sources."sprintf-js-1.0.3"
+      sources."statuses-2.0.2"
       sources."stop-iteration-iterator-1.1.0"
+      sources."string-width-4.2.3"
+      sources."string-width-cjs-npm:string-width@4.2.3"
       sources."string.prototype.trim-1.2.10"
       sources."string.prototype.trimend-1.0.9"
       sources."string.prototype.trimstart-1.0.8"
+      sources."strip-ansi-6.0.1"
+      sources."strip-ansi-cjs-npm:strip-ansi@6.0.1"
       sources."structured-source-4.0.0"
-      (sources."textlint-rule-helper-2.5.0" // {
+      sources."supports-color-7.2.0"
+      (sources."table-6.9.0" // {
         dependencies = [
-          sources."@textlint/ast-node-types-15.2.2"
+          sources."ajv-8.17.1"
+          sources."json-schema-traverse-1.0.0"
         ];
       })
+      sources."text-table-0.2.0"
+      sources."textlint-15.2.2"
+      sources."textlint-rule-helper-2.5.0"
+      sources."textlint-rule-ja-nakaguro-or-halfwidth-space-between-katakana-2.4.3"
       sources."textlint-rule-ja-no-abusage-3.0.0"
       sources."textlint-rule-ja-no-mixed-period-3.0.1"
-      sources."textlint-rule-ja-no-redundant-expression-4.0.1"
-      sources."textlint-rule-ja-no-successive-word-2.0.1"
+      (sources."textlint-rule-ja-no-redundant-expression-4.0.1" // {
+        dependencies = [
+          sources."@textlint/regexp-string-matcher-1.1.1"
+          sources."escape-string-regexp-2.0.0"
+        ];
+      })
+      sources."textlint-rule-ja-no-space-around-parentheses-2.4.2"
+      sources."textlint-rule-ja-no-space-between-full-width-2.4.2"
+      (sources."textlint-rule-ja-no-successive-word-2.0.1" // {
+        dependencies = [
+          sources."@textlint/regexp-string-matcher-1.1.1"
+          sources."escape-string-regexp-2.0.0"
+        ];
+      })
       sources."textlint-rule-ja-no-weak-phrase-2.0.0"
-      sources."textlint-rule-ja-unnatural-alphabet-2.0.1"
+      sources."textlint-rule-ja-space-after-exclamation-2.4.2"
+      sources."textlint-rule-ja-space-after-question-2.4.2"
+      sources."textlint-rule-ja-space-around-code-2.4.2"
+      sources."textlint-rule-ja-space-around-link-2.4.2"
+      sources."textlint-rule-ja-space-between-half-and-full-width-2.4.2"
+      (sources."textlint-rule-ja-unnatural-alphabet-2.0.1" // {
+        dependencies = [
+          sources."@textlint/regexp-string-matcher-1.1.1"
+          sources."escape-string-regexp-2.0.0"
+        ];
+      })
       sources."textlint-rule-max-comma-4.0.0"
       sources."textlint-rule-max-kanji-continuous-len-1.1.1"
       sources."textlint-rule-max-ten-5.0.0"
@@ -4647,11 +4506,22 @@ in
       sources."textlint-rule-no-doubled-conjunctive-particle-ga-3.0.0"
       sources."textlint-rule-no-doubled-joshi-5.1.0"
       sources."textlint-rule-no-dropping-the-ra-3.0.0"
-      sources."textlint-rule-no-exclamation-question-mark-1.1.0"
+      (sources."textlint-rule-no-exclamation-question-mark-1.1.0" // {
+        dependencies = [
+          sources."@textlint/regexp-string-matcher-1.1.1"
+          sources."escape-string-regexp-2.0.0"
+        ];
+      })
       sources."textlint-rule-no-hankaku-kana-2.0.1"
       sources."textlint-rule-no-mix-dearu-desumasu-6.0.4"
       sources."textlint-rule-no-nfd-2.0.2"
       sources."textlint-rule-no-zero-width-spaces-1.0.1"
+      sources."textlint-rule-preset-ja-spacing-2.4.3"
+      (sources."textlint-rule-preset-ja-technical-writing-12.0.2" // {
+        dependencies = [
+          sources."@textlint/module-interop-14.8.4"
+        ];
+      })
       (sources."textlint-rule-preset-jtf-style-3.0.2" // {
         dependencies = [
           sources."analyze-desumasu-dearu-2.1.5"
@@ -4659,49 +4529,113 @@ in
         ];
       })
       sources."textlint-rule-prh-5.3.0"
-      (sources."textlint-rule-sentence-length-5.2.0" // {
+      sources."textlint-rule-sentence-length-5.2.0"
+      (sources."textlint-tester-13.4.1" // {
         dependencies = [
-          sources."@textlint/regexp-string-matcher-2.0.2"
-          sources."escape-string-regexp-4.0.0"
+          sources."@textlint/ast-node-types-13.4.1"
+          sources."@textlint/ast-tester-13.4.1"
+          sources."@textlint/ast-traverse-13.4.1"
+          sources."@textlint/feature-flag-13.4.1"
+          sources."@textlint/kernel-13.4.1"
+          sources."@textlint/markdown-to-ast-13.4.1"
+          sources."@textlint/source-code-fixer-13.4.1"
+          sources."@textlint/text-to-ast-13.4.1"
+          sources."@textlint/textlint-plugin-markdown-13.4.1"
+          sources."@textlint/textlint-plugin-text-13.4.1"
+          sources."@textlint/types-13.4.1"
+          sources."@textlint/utils-13.4.1"
         ];
       })
-      sources."textlint-tester-13.4.1"
-      sources."textlint-util-to-string-3.3.4"
+      (sources."textlint-util-to-string-3.3.4" // {
+        dependencies = [
+          sources."@textlint/ast-node-types-13.4.1"
+          sources."unified-8.4.2"
+        ];
+      })
       sources."to-regex-3.0.2"
+      sources."toidentifier-1.0.1"
       sources."traverse-0.6.11"
       sources."trough-1.0.5"
+      sources."type-check-0.4.0"
+      sources."type-fest-4.41.0"
+      sources."type-is-2.0.1"
       sources."typed-array-buffer-1.0.3"
       sources."typed-array-byte-length-1.0.3"
       sources."typed-array-byte-offset-1.0.4"
       sources."typed-array-length-1.0.7"
       sources."typedarray.prototype.slice-1.0.5"
       sources."unbox-primitive-1.1.0"
-      sources."unified-8.4.2"
+      sources."unicorn-magic-0.1.0"
+      (sources."unified-9.2.2" // {
+        dependencies = [
+          sources."is-buffer-2.0.5"
+        ];
+      })
       sources."unist-util-is-4.1.0"
       sources."unist-util-stringify-position-2.0.3"
       sources."unist-util-visit-2.0.3"
       sources."unist-util-visit-parents-3.1.1"
+      sources."unpipe-1.0.0"
       sources."untildify-3.0.3"
-      sources."vfile-4.2.1"
+      sources."uri-js-4.4.1"
+      sources."validate-npm-package-license-3.0.4"
+      sources."vary-1.1.2"
+      (sources."vfile-4.2.1" // {
+        dependencies = [
+          sources."is-buffer-2.0.5"
+        ];
+      })
       sources."vfile-message-2.0.4"
       sources."web-namespaces-1.1.4"
+      sources."which-2.0.2"
       sources."which-boxed-primitive-1.1.1"
       sources."which-builtin-type-1.2.1"
       sources."which-collection-1.0.2"
       sources."which-typed-array-1.1.19"
+      sources."word-wrap-1.2.5"
+      (sources."wrap-ansi-8.1.0" // {
+        dependencies = [
+          sources."ansi-regex-6.2.0"
+          sources."ansi-styles-6.2.1"
+          sources."emoji-regex-9.2.2"
+          sources."string-width-5.1.2"
+          sources."strip-ansi-7.1.0"
+        ];
+      })
+      sources."wrap-ansi-cjs-npm:wrap-ansi@7.0.0"
+      sources."wrappy-1.0.2"
       sources."write-file-atomic-1.3.4"
       sources."xtend-4.0.2"
+      sources."zenn-cli-0.2.1"
       sources."zlibjs-0.3.1"
+      sources."zod-3.25.76"
+      sources."zod-to-json-schema-3.24.6"
       sources."zwitch-1.0.5"
     ];
     buildInputs = globalBuildInputs;
     meta = {
-      description = "技術文書向けのtextlintルールプリセット";
-      homepage = "https://github.com/textlint-ja/textlint-rule-preset-ja-technical-writing";
-      license = "MIT";
     };
     production = true;
     bypassCache = true;
-    reconstructLock = true;
+    reconstructLock = false;
   };
+in
+{
+  args = args;
+  sources = sources;
+  tarball = nodeEnv.buildNodeSourceDist args;
+  package = nodeEnv.buildNodePackage args;
+  shell = nodeEnv.buildNodeShell args;
+  nodeDependencies = nodeEnv.buildNodeDependencies (lib.overrideExisting args {
+    src = stdenv.mkDerivation {
+      name = args.name + "-package-json";
+      src = nix-gitignore.gitignoreSourcePure [
+        "*"
+        "!package.json"
+        "!package-lock.json"
+      ] args.src;
+      dontBuild = true;
+      installPhase = "mkdir -p $out; cp -r ./* $out;";
+    };
+  });
 }
