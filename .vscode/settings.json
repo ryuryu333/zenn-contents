@@ -7,14 +7,4 @@
         ["*.md", "![](${relImage})"],
         ["*", "${relImage:${workspaceFolder}}"]
     ],
-    "markdownlint.config": {
-        "MD001": false,
-        "MD012": false,
-        "MD022": false,
-        "MD025": false,
-        "MD034": false 
-    },
-    "textlint.languages": [
-      "markdown"
-    ],
 }
