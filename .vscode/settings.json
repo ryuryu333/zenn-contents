@@ -13,5 +13,8 @@
         "MD022": false,
         "MD025": false,
         "MD034": false 
-    }
+    },
+    "textlint.languages": [
+      "markdown"
+    ],
 }
