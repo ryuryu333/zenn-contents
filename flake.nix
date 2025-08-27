@@ -15,16 +15,19 @@
         my-node-pkgs = import ./node-pkgs/default.nix {
           inherit pkgs system;
           nodejs = pkgs.nodejs_24;
-          };
+        };
+        inherit (my-node-pkgs) nodeDependencies;
       in
       {
         devShells.default = pkgs.mkShell {
           packages = [
-            pkgs.zenn-cli
-            my-node-pkgs."textlint-15.2.2"
-            my-node-pkgs."textlint-rule-preset-ja-spacing-2.4.3"
-            my-node-pkgs."textlint-rule-preset-ja-technical-writing-12.0.2"
+            nodeDependencies
             ];
+          shellHook = ''
+            ln -s ${nodeDependencies}/lib/node_modules ./node_modules
+            export PATH="${nodeDependencies}/bin:$PATH"
+            ln -s $NODE_PATH node_modules
+          '';
         };
       }
     );
