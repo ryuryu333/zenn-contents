@@ -22,6 +22,7 @@
         devShells.default = pkgs.mkShell {
           packages = [
             nodeDependencies
+            pkgs.treefmt
             ];
           shellHook = ''
             ln -s ${nodeDependencies}/lib/node_modules ./node_modules

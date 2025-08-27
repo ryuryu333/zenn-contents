@@ -1,0 +1,7 @@
+[formatter.md]
+command = "markdownlint-cli2"
+includes = ["articles/*.md"]
+
+[formatter.text]
+command = "textlint"
+includes = ["articles/*.md"]
