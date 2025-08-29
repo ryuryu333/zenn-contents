@@ -23,11 +23,9 @@
           packages = [
             nodeDependencies
             pkgs.treefmt
-            ];
+          ];
           shellHook = ''
-            ln -s ${nodeDependencies}/lib/node_modules ./node_modules
-            export PATH="${nodeDependencies}/bin:$PATH"
-            ln -s $NODE_PATH node_modules
+            ln -sfn ${nodeDependencies}/lib/node_modules ./node_modules
           '';
         };
       }
