@@ -5456,7 +5456,7 @@ let
     buildInputs = globalBuildInputs;
     meta = {
     };
-    production = true;
+    production = false;
     bypassCache = true;
     reconstructLock = false;
   };
