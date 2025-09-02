@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": "true",
   "devDependencies": {
+    "cspell": "9.2.1",
     "markdownlint-cli2": "0.18.1",
     "textlint": "15.2.2",
     "textlint-rule-preset-ja-spacing": "2.4.3",
