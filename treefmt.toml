@@ -8,6 +8,11 @@ command = "textlint"
 includes = ["articles/*.md"]
 priority = 2
 
+[formatter.url]
+command = "lychee"
+includes = ["articles/*.md"]
+priority = 3
+
 [global]
 excludes = [
     "articles/00341ed49b7935.md",
