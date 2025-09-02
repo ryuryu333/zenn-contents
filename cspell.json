@@ -1,0 +1,7 @@
+{
+    "version": "0.2",
+    "files": [
+        "articles/*.md"
+    ],
+    "words": []
+}
