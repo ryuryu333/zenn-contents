@@ -2,17 +2,20 @@
   description = "Zenn CLI environment";
 
   # == usage ==
-  # 1. edit node-pkgs/package.json to specify the package name and version
-  #    or add packages by:
-  #    nix-shell -p nodejs_24 --run 'cd node-pkgs && npm add -D <package-name>@<version> --package-lock-only'
-  # 2. update node-pkgs/package-lock.json by:
-  #    nix-shell -p nodejs_24 --run 'cd node-pkgs && npm install --package-lock-only'
-  # 3. use the dev shell by: 
-  #    nix develop
+  # 1. use the dev shell by:
+  #      nix develop
+  # 2. edit node-pkgs/package.json to specify the package name and version by:
+  #      npm install -D <package-name>@<version> --package-lock-only
+  #      npm uninstall -D <package-name> --package-lock-only
+  # 3. re-enter the dev shell by:
+  #      exit
+  #      nix develop
 
   # == NOTE ==
   # using nodejs_24, if you need other version, change nodejs
   # if you need to select a different package.json, change npmRoot
+  # you MUST use npm `--package-lock-only` option
+  # to ensure the lockfile is updated correctly
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
@@ -46,15 +49,20 @@
         devShells.node = pkgs.mkShell {
           packages = [
             nodejs
+            pkgs.npm-check-updates
           ];
           shellHook = ''
             cd node-pkgs
             echo "Node.js version: $(node -v)
-            add:
+            == add ==
             npm install -D <package-name>@<version> --package-lock-only
-            remove:
+            == remove ==
             npm uninstall -D <package-name> --package-lock-only
-            convert package.json to package-lock.json:
+            == check update ==
+            ncu
+            == update package.json ==
+            ncu -u
+            == convert package.json to package-lock.json ==
             npm install --package-lock-only"
           '';
         };
