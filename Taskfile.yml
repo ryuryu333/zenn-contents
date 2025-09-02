@@ -1,0 +1,8 @@
+version: '3'
+
+tasks:
+  default:
+    aliases: [lint]
+    cmds:
+      - treefmt --config-file ./linter/treefmt.toml
+    silent: true
