@@ -10,6 +10,7 @@ priority = 2
 
 [formatter.url]
 command = "lychee"
+options = ["--timeout", "10", "--max-retries", "2"] 
 includes = ["articles/*.md"]
 priority = 3
 
