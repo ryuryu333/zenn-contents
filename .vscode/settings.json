@@ -7,4 +7,6 @@
         ["*.md", "![](${relImage})"],
         ["*", "${relImage:${workspaceFolder}}"]
     ],
+    "textlint.configPath": "/home/ryu/dev/zenn_contents/linter/.textlintrc.json",
+    "markdownlint.configFile": "/home/ryu/dev/zenn_contents/linter/.markdownlint-cli2.jsonc",
 }

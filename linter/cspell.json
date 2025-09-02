@@ -3,5 +3,7 @@
     "files": [
         "articles/*.md"
     ],
-    "words": []
+    "words": [
+        "Zenn"
+    ]
 }
