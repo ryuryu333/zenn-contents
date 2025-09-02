@@ -37,6 +37,7 @@
           packages = [
             pkgs.treefmt
             pkgs.lychee
+            pkgs.go-task
             importNpmLock.hooks.linkNodeModulesHook
           ];
           npmDeps = importNpmLock.buildNodeModules {
