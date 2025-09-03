@@ -2,6 +2,7 @@ version: '3'
 
 vars:
   NODEPKGS: node-pkgs
+  NODE_SHELL: nix develop .#node -c
 
 tasks:
   default:
@@ -28,7 +29,7 @@ tasks:
       - sh: test -n "{{.CLI_ARGS}}"
         msg: "Package name is required, e.g. task add -- zenn-cli"
     cmds:
-      - nix develop .#node -c npm install {{.CLI_ARGS}} --package-lock-only
+      - "{{.NODE_SHELL}} npm install -D {{.CLI_ARGS}} --package-lock-only"
       - task: reload
     silent: true
 
@@ -40,29 +41,29 @@ tasks:
       - sh: test -n "{{.CLI_ARGS}}"
         msg: "Package name is required, e.g. task remove -- zenn-cli"
     cmds:
-      - nix develop .#node -c npm uninstall {{.CLI_ARGS}} --package-lock-only
+      - "{{.NODE_SHELL}} npm uninstall -D {{.CLI_ARGS}} --package-lock-only"
       - task: reload
     silent: true
 
-  check:
+  update-check:
     desc: Check for outdated packages before update
     dir: ./{{.NODEPKGS}}
     cmds:
-      - nix develop .#node -c ncu
+      - "{{.NODE_SHELL}} ncu"
     silent: true
 
   update-packages:
     desc: Update packages to the latest version (only package.json)
     dir: ./{{.NODEPKGS}}
     cmds:
-      - nix develop .#node -c ncu -u
+      - "{{.NODE_SHELL}} ncu -u"
     silent: true
 
   update-lockfile:
     desc: Refresh package-lock.json from package.json
     dir: ./{{.NODEPKGS}}
     cmds:
-      - nix develop .#node -c npm install --package-lock-only
+      - "{{.NODE_SHELL}} npm install --package-lock-only"
     silent: true
 
   update:
