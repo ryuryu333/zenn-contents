@@ -1,8 +1,75 @@
 version: '3'
 
+vars:
+  NODEPKGS: node-pkgs
+
 tasks:
   default:
-    aliases: [lint]
+    cmds:
+      - task: lint
+
+  lint:
+    desc: "[default] Run linters"
     cmds:
       - treefmt --config-file ./linter/treefmt.toml
+    silent: true
+
+  reload:
+    desc: Reload Nix devShell environment
+    cmds:
+      - direnv reload
+    silent: true
+
+  add:
+    desc: Add package to package.json and package-lock.json (requires args e.g. <PackageName>@<Version>)
+    aliases: [install]
+    dir: ./{{.NODEPKGS}}
+    preconditions:
+      - sh: test -n "{{.CLI_ARGS}}"
+        msg: "Package name is required, e.g. task add -- zenn-cli"
+    cmds:
+      - nix develop .#node -c npm install {{.CLI_ARGS}} --package-lock-only
+      - task: reload
+    silent: true
+
+  remove:
+    desc: Remove package from package.json and package-lock.json (requires args e.g. <PackageName>)
+    aliases: [uninstall]
+    dir: ./{{.NODEPKGS}}
+    preconditions:
+      - sh: test -n "{{.CLI_ARGS}}"
+        msg: "Package name is required, e.g. task remove -- zenn-cli"
+    cmds:
+      - nix develop .#node -c npm uninstall {{.CLI_ARGS}} --package-lock-only
+      - task: reload
+    silent: true
+
+  check:
+    desc: Check for outdated packages before update
+    dir: ./{{.NODEPKGS}}
+    cmds:
+      - nix develop .#node -c ncu
+    silent: true
+
+  update-packages:
+    desc: Update packages to the latest version (only package.json)
+    dir: ./{{.NODEPKGS}}
+    cmds:
+      - nix develop .#node -c ncu -u
+    silent: true
+
+  update-lockfile:
+    desc: Refresh package-lock.json from package.json
+    dir: ./{{.NODEPKGS}}
+    cmds:
+      - nix develop .#node -c npm install --package-lock-only
+    silent: true
+
+  update:
+    desc: Update packages and refresh package-lock.json
+    dir: ./{{.NODEPKGS}}
+    cmds:
+      - task: update-packages
+      - task: update-lockfile
+      - task: reload
     silent: true
