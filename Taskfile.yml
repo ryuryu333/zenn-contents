@@ -35,7 +35,7 @@ tasks:
 
   remove:
     desc: Remove package from package.json and package-lock.json (requires args e.g. <PackageName>)
-    aliases: [uninstall]
+    aliases: [uninstall, rm]
     dir: ./{{.NODEPKGS}}
     preconditions:
       - sh: test -n "{{.CLI_ARGS}}"
@@ -68,6 +68,7 @@ tasks:
 
   update:
     desc: Update packages and refresh package-lock.json
+    aliases: [up]
     dir: ./{{.NODEPKGS}}
     cmds:
       - task: update-packages
