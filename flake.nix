@@ -1,21 +1,24 @@
 {
   description = "Zenn CLI environment";
 
-  # == usage ==
-  # 1. use the dev shell by:
-  #      nix develop
-  # 2. edit node-pkgs/package.json to specify the package name and version by:
-  #      npm install -D <package-name>@<version> --package-lock-only
-  #      npm uninstall -D <package-name> --package-lock-only
-  # 3. re-enter the dev shell by:
-  #      exit
-  #      nix develop
+  # == USAGE ==
+  # you can use the following commands in this environment
+  # e.g. 
+  #   task               -> run linters 
+  #   task add zenn-cli  -> add zenn-cli to package.json and package-lock.json
+  # cf. Taskfile.yml or run 'task -l'
+  # * add:                   Add package to package.json and package-lock.json (requires args e.g. <PackageName>@<Version>)      (aliases: install)
+  # * check:                 Check for outdated packages before update
+  # * lint:                  [default] Run linters
+  # * reload:                Reload Nix devShell environment
+  # * remove:                Remove package from package.json and package-lock.json (requires args e.g. <PackageName>)      (aliases: uninstall)
+  # * update:                Update packages and refresh package-lock.json
+  # * update-lockfile:       Refresh package-lock.json from package.json
+  # * update-packages:       Update packages to the latest version (only package.json)
 
   # == NOTE ==
   # using nodejs_24, if you need other version, change nodejs
   # if you need to select a different package.json, change npmRoot
-  # you MUST use npm `--package-lock-only` option
-  # to ensure the lockfile is updated correctly
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
@@ -44,29 +47,13 @@
             inherit npmRoot nodejs;
           };
         };
-        
+
         # for updating package.json and package-lock.json
-        # enter the shell by:
-        #   nix develop .#node
         devShells.node = pkgs.mkShell {
           packages = [
             nodejs
             pkgs.npm-check-updates
           ];
-          shellHook = ''
-            cd node-pkgs
-            echo "Node.js version: $(node -v)
-            == add ==
-            npm install -D <package-name>@<version> --package-lock-only
-            == remove ==
-            npm uninstall -D <package-name> --package-lock-only
-            == check update ==
-            ncu
-            == update package.json ==
-            ncu -u
-            == convert package.json to package-lock.json ==
-            npm install --package-lock-only"
-          '';
         };
       }
     );
