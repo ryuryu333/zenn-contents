@@ -4,26 +4,26 @@ vars:
   NODEPKGS: node-pkgs
   NODE_SHELL: nix develop .#node -c
 
+silent: true
+
 tasks:
   default:
-    cmds:
-      - task: lint
+    deps:
+      - lint
 
   lint:
     desc: "[default] Run linters"
     cmds:
       - treefmt --config-file ./linter/treefmt.toml
-    silent: true
 
   reload:
     desc: Reload Nix devShell environment
     cmds:
       - direnv reload
-    silent: true
 
-  add:
+  node:install:
     desc: Add package to package.json and package-lock.json (requires args e.g. <PackageName>@<Version>)
-    aliases: [install]
+    aliases: [install, add]
     dir: ./{{.NODEPKGS}}
     preconditions:
       - sh: test -n "{{.CLI_ARGS}}"
@@ -31,11 +31,10 @@ tasks:
     cmds:
       - "{{.NODE_SHELL}} npm install -D {{.CLI_ARGS}} --package-lock-only"
       - task: reload
-    silent: true
 
-  remove:
+  node:uninstall:
     desc: Remove package from package.json and package-lock.json (requires args e.g. <PackageName>)
-    aliases: [uninstall, rm]
+    aliases: [uninstall, remove, rm]
     dir: ./{{.NODEPKGS}}
     preconditions:
       - sh: test -n "{{.CLI_ARGS}}"
@@ -43,35 +42,30 @@ tasks:
     cmds:
       - "{{.NODE_SHELL}} npm uninstall -D {{.CLI_ARGS}} --package-lock-only"
       - task: reload
-    silent: true
 
-  update-check:
+  node:update:check:
     desc: Check for outdated packages before update
     dir: ./{{.NODEPKGS}}
     cmds:
       - "{{.NODE_SHELL}} ncu"
-    silent: true
 
-  update-packages:
+  node:update:packages:
     desc: Update packages to the latest version (only package.json)
     dir: ./{{.NODEPKGS}}
     cmds:
       - "{{.NODE_SHELL}} ncu -u"
-    silent: true
 
-  update-lockfile:
+  node:update:lockfile:
     desc: Refresh package-lock.json from package.json
     dir: ./{{.NODEPKGS}}
     cmds:
       - "{{.NODE_SHELL}} npm install --package-lock-only"
-    silent: true
 
-  update:
+  node:update:
     desc: Update packages and refresh package-lock.json
-    aliases: [up]
+    aliases: [update, up]
     dir: ./{{.NODEPKGS}}
-    cmds:
-      - task: update-packages
-      - task: update-lockfile
-      - task: reload
-    silent: true
+    deps:
+      - node:update:packages
+      - node:update:lockfile
+      - reload
