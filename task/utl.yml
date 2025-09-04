@@ -1,0 +1,12 @@
+version: '3'
+
+tasks:
+  lint:
+    desc: "Run linters"
+    cmds:
+      - treefmt --config-file ./linter/treefmt.toml
+
+  reload:
+    desc: Reload Nix devShell environment
+    cmds:
+      - direnv reload
