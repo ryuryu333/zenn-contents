@@ -21,7 +21,7 @@ tasks:
       - "{{.NODE_SHELL}} npm uninstall -D {{.CLI_ARGS}} --package-lock-only"
 
   update:check:
-    desc: Check for outdated packages before update
+    desc: Check for outdated packages
     cmds:
       - "{{.NODE_SHELL}} ncu"
 
