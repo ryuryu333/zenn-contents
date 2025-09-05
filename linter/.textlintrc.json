@@ -1,6 +1,8 @@
 {
   "plugins": {},
-  "filters": {},
+  "filters": {
+    "comments": true
+  },
   "rules": {
     "preset-ja-spacing": {
       "ja-space-between-half-and-full-width": {
@@ -16,6 +18,11 @@
             "allowPeriodMarks": [":"]
       },
       "no-exclamation-question-mark": false
+    },
+    "terminology": {
+      "exclude": [
+        "V[ -]?S[ -]?Code"
+      ]
     }
   }
 }
