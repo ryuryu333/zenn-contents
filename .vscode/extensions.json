@@ -1,6 +1,10 @@
 {
     "recommendations": [
         "nodamushi.udon",
+        "streetsidesoftware.code-spell-checker",
+        "mkhl.direnv",
+        "davidanson.vscode-markdownlint",
+        "3w36zj6.textlint",
         "negokaz.zenn-editor"
     ]
 }
