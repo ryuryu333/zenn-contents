@@ -4,6 +4,19 @@
         "articles/*.md"
     ],
     "words": [
-        "Zenn"
+        "davidanson",
+        "dearu",
+        "desumasu",
+        "direnv",
+        "nixos",
+        "nixpkgs",
+        "numtide",
+        "pkgs",
+        "Taskfile",
+        "textlint",
+        "textlintrc",
+        "treefmt",
+        "Zenn",
+        "zenncli"
     ]
 }
