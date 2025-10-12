@@ -3,6 +3,3 @@ max_retries = 2
 
 # Website timeout from connect to response finished.
 timeout = 10
-
-# Root path to use when checking absolute local links, must be an absolute path
-root_dir = "/home/ryu/dev/zenn_contents"
