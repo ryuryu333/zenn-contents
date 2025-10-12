@@ -12,6 +12,10 @@ silent: true
 
 tasks:
   default:
+    cmds:
+      - task --list
+
+  lint:
     desc: -> utl:lint
     cmds:
       - task: utl:lint
