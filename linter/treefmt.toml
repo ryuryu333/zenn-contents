@@ -12,7 +12,7 @@ priority = 2
 
 [formatter.url]
 command = "lychee"
-options = ["--config", "linter/lychee.toml", "--root-dir", "/home/ryu/dev/zenn_contents/"] 
+options = ["--config", "linter/lychee.toml", "--root-dir", "/proc/self/cwd"] 
 includes = ["articles/*.md"]
 priority = 3
 
