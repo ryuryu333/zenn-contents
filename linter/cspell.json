@@ -4,19 +4,28 @@
         "articles/*.md"
     ],
     "words": [
+        "authtoken",
+        "cachix",
+        "cicd",
         "davidanson",
         "dearu",
         "desumasu",
+        "dhall",
         "direnv",
+        "githubactions",
+        "marp",
         "nixos",
         "nixpkgs",
+        "noto",
         "numtide",
         "pkgs",
+        "ryuryu",
         "Taskfile",
         "textlint",
         "textlintrc",
         "treefmt",
         "Zenn",
-        "zenncli"
+        "zenncli",
+        "zennfes"
     ]
 }
