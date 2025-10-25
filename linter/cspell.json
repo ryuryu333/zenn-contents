@@ -13,6 +13,7 @@
         "dhall",
         "direnv",
         "githubactions",
+        "hoge",
         "marp",
         "nixos",
         "nixpkgs",
