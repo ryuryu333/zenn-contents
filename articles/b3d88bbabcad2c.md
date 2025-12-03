@@ -4,7 +4,7 @@ emoji: "🐚"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [nix, nixflakes, homemanager, dotfiles]
 published: false
-published_at: "2025-12-05 07:00"
+# published_at: "2025-12-05 07:00"
 ---
 
 # はじめに
