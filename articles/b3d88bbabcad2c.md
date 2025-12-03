@@ -3,7 +3,7 @@ title: "home-manager で WSL と Mac の dotfiles を一括管理する"
 emoji: "🐚"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [nix, nixflakes, homemanager, dotfiles]
-published: true
+published: false
 published_at: "2025-12-05 07:00"
 ---
 
