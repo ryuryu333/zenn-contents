@@ -1,5 +1,5 @@
 ---
-title: "複数の Linux / Mac のユーザー環境を 1 レポジトリ + 1 コマンドで構築する（Nix 未経験者向け解説）"
+title: "複数の Linux / Mac のユーザー環境を 1 リポジトリ + 1 コマンドで構築する（Nix 未経験者向け解説）"
 emoji: "🐚"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [nix, nixflakes, homemanager, dotfiles]
@@ -11,10 +11,10 @@ published_at: "2025-12-05 07:00"
 **本記事では、備忘録を兼ねて、私が行っているユーザー環境の管理方法を解説します**。
 
 複数の PC を使っていると、Git などをそれぞれ手作業でインストールしたり、`.gitconfig` をコピーして使いまわすのは面倒です。
-かといって、WSL 用 / Mac 用と dotfiles を別々のレポジトリとして管理するのもこれまた面倒です。
+かといって、WSL 用 / Mac 用と dotfiles を別々のリポジトリとして管理するのもこれまた面倒です。
 
 そこで、**私は home-manager を利用してユーザー環境を管理しています**。
-複数の Linux / Mac のユーザー環境を **1 レポジトリ + 1 コマンド** で構築できる状態になるように設定を組んでいます。
+複数の Linux / Mac のユーザー環境を **1 リポジトリ + 1 コマンド** で構築できる状態になるように設定を組んでいます。
 
 **本記事では、`git clone <dotfiles>` して `home-manager switch` するだけで、実行環境に合わせた設定ファイルを元にユーザー環境（Git 等の導入、`.gitconfig` の配置など）を構築できるように設定していきます**。
 
@@ -278,7 +278,7 @@ https://nix-community.github.io/home-manager/release-notes.xhtml
 ここにユーザー環境で利用したいツールを記述します。
 
 利用可能なツールは NixOS Search - Packages で検索できます。
-NixOSnixpkgs レポジトリには約 10 万のツールが登録されているので、大抵のツールは見つかるかと思います。
+NixOSnixpkgs リポジトリには約 10 万のツールが登録されているので、大抵のツールは見つかるかと思います。
 
 https://search.nixos.org/packages
 
@@ -477,10 +477,8 @@ home-manager 本体、及び、home-manager で導入するツールのバージ
 `home-manager/flake.nix` があるディレクトリで実行してください。
 
 ```bash:bash
-nix flake update
-```
+$ nix flake update
 
-```bash:bash
 # home-manager のみを更新する場合
 $ nix flake lock --update-input home-manager
 
@@ -488,13 +486,27 @@ $ nix flake lock --update-input home-manager
 $ nix flake lock --update-input nixpkgs
 ```
 
+上記コマンドでツールを更新した後、`switch` するとユーザー環境に反映されます。
+
+```bash:bash
+home-manager switch
+```
+
+なお、home-manager 本体を更新するときは、リリースノートを確認し、`stateVersion` を書き換えてください。
+
+```nix:home.nix
+  home.stateVersion = "25.11";
+```
+
+https://nix-community.github.io/home-manager/release-notes.xhtml
+
 
 # 5. Mac と WSL の環境を同時に管理
 先ほど作成した WSL 環境に加えて、Mac 環境も同時に管理する、というストーリーを想定します。
 
 以下の流れで作業していきます。
 
-- dotfiles レポジトリの準備
+- dotfiles リポジトリの準備
 - 共通した設定を定義したファイルの作成（`common.nix`）
 - 環境独自の設定を定義したファイルの作成（`wsl.nix`、`mac.nix`）
 - 各環境の `USER` と `HOSTNAME` を確認
@@ -514,7 +526,7 @@ home-manager/
 ```
 
 
-## 5.1 dotfiles レポジトリの準備
+## 5.1 dotfiles リポジトリの準備
 先ほど作業した `~/.config/home-manager/` を Git 管理します。
 
 フォルダ内で直接 Git 管理してもいいですし、私は `~/work/dotfiles` で管理して、`dotfiles/home-manager` から `.config/home-manager` にシンボリックリンクを張っています。
@@ -726,6 +738,8 @@ nix run home-manager/master -- init --switch
 
 # ~/.config/home-manager/ の中身を dotfiles で管理している home-manager/ で置き換え
 git clone <your_dotfiles>
+rm -rf ~/.config/home-manager
+ln -s ~/work/dotfiles/home-manager ~/.config/home-manager
 
 # 環境を反映
 home-manager switch
@@ -826,12 +840,12 @@ function setFlakeAttribute() {
 
 方法 3 をより楽に実施できないかと調べた結果、今の方法に行きついた次第です。
 
-#### 1. dotfiles レポジトリを OS 毎に作り、`home.nix` を用意する
+#### 1. dotfiles リポジトリを OS 毎に作り、`home.nix` を用意する
 
 - WSL と Mac で共通した設定を使いまわせない、管理コストが大きい
 
 
-#### 2. 単独の dotfiles レポジトリで `home.nix` を用意し、if 文で頑張る
+#### 2. 単独の dotfiles リポジトリで `home.nix` を用意し、if 文で頑張る
 
 - 美しくない（主観）
   - 環境ごとの記述が混在するので可読性が悪いと感じる
