@@ -739,7 +739,6 @@ curl -fsSL https://install.determinate.systems/nix | sh -s -- install --determin
 
 # ~/.config/home-manager/ の中身を dotfiles で管理している home-manager/ に配置
 git clone <your_dotfiles>
-rm -rf ~/.config/home-manager
 ln -s ~/work/dotfiles/home-manager ~/.config/home-manager
 
 # 環境を反映
