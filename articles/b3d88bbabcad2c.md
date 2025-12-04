@@ -282,7 +282,7 @@ https://nix-community.github.io/home-manager/release-notes.xhtml
 ここにユーザー環境で利用したいツールを記述します。
 
 利用可能なツールは NixOS Search - Packages で検索できます。
-NixOSnixpkgs リポジトリには約 10 万のツールが登録されているので、大抵のツールは見つかるかと思います。
+NixOS/nixpkgs リポジトリには約 10 万のツールが登録されているので、大抵のツールは見つかるかと思います。
 
 https://search.nixos.org/packages
 
@@ -297,7 +297,7 @@ vim（青色文字になってる部分）をクリックし、`How to install v
 
 ![検索例](/images/b3d88bbabcad2c/b3d88bbabcad2c-2025-12-4.webp)
 
-Nix はプラットフォームに合わせたツールの自動的に導入をしてくれますが、ツールによっては未対応のプラットフォームもあります。
+Nix はプラットフォームに合わせたツールを自動的に導入をしてくれますが、ツールによっては未対応のプラットフォームもあります。
 M1 Mac なら `aarch64-darwin` といったように、自身の PC が対応しているか念のため確認してください。
 
 一般的な Windows WSL 環境（`x86_64-linux`）ならほとんどの場合対応しています。
