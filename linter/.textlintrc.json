@@ -17,7 +17,13 @@
       "ja-no-mixed-period": {
             "allowPeriodMarks": [":"]
       },
-      "no-exclamation-question-mark": false
+      "no-exclamation-question-mark": false,
+            "sentence-length": {
+        "max": 150
+      },
+      "max-kanji-continuous-len": {
+        "max": 10
+      }
     },
     "terminology": {
       "exclude": [
