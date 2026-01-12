@@ -7,5 +7,5 @@ topics: [nix]
 published: false
 price: 0
 chapters:
-  - c1
-  - c2
+  - c01
+  - c02
