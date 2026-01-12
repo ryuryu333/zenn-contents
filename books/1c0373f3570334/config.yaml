@@ -1,0 +1,11 @@
+title: "ちいさく始める Nix パッケージ管理"
+summary: |
+  Nix に興味があるけど、何から始めたらいいかわからない人のための入門書です。
+
+  Homebrew など従来のパッケージ管理の状態から少しずつ Nix 管理に置き換えていく方法を解説します。
+topics: [nix]
+published: false
+price: 0
+chapters:
+  - c1
+  - c2
