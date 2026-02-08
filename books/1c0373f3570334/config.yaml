@@ -7,7 +7,7 @@ topics: [nix]
 published: false
 price: 0
 chapters:
-  - common-01
+  - entrypoint-01
   - common-02
   - common-03
   - common-04
