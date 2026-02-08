@@ -12,6 +12,7 @@ chapters:
   - common-02
   - common-03
   - common-04
+  - common-05
   - user-01
   - user-02
   - user-03
@@ -27,3 +28,5 @@ chapters:
   - dev-02
   - dev-03
   - dev-04
+  - tips-01
+  - tips-02
