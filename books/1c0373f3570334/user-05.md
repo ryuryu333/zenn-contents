@@ -54,7 +54,7 @@ home-manager switch
 :::
 
 
-# 3.2 Git の設定ファイルを一緒に管理する
+## 3.2 Git の設定ファイルを一緒に管理する
 `~/.config/home-manager/git/.gitconfig` を用意し、既存の設定をコピペし、`home.nix` を以下のように記述します。
 
 ```nix:~/.config/home-manager/home.nix

@@ -75,7 +75,7 @@ title: "nix-darwin で Homebrew を管理する"
 ```
 
 
- # 4. 反映する
+# 4. 反映する
 nix-darwin の環境を更新すると、Homebrew によるツールのインストール処理も実施されます。
 
 ```bash:Bash

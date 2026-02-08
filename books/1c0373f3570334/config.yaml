@@ -7,20 +7,23 @@ topics: [nix]
 published: false
 price: 0
 chapters:
-  - c01
-  - c02
-  - c03
-  - c04
-  - c05
-  - c06
-  - c07
-  - c08
-  - c09
-  - c10
-  - c11
-  - c12
-  - c13
-  - c14
-  - c15
-  - c16
-  - c17
+  - common-01
+  - common-02
+  - common-03
+  - common-04
+  - common-05
+  - user-01
+  - user-02
+  - user-03
+  - user-04
+  - user-05
+  - mac-01
+  - mac-02
+  - mac-03
+  - mac-04
+  - mac-05
+  - mac-06
+  - dev-01
+  - dev-02
+  - dev-03
+  - dev-04
