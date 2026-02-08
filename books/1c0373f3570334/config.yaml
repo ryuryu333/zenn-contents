@@ -8,10 +8,10 @@ published: false
 price: 0
 chapters:
   - entrypoint-01
+  - common-01
   - common-02
   - common-03
   - common-04
-  - common-05
   - user-01
   - user-02
   - user-03

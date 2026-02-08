@@ -1,83 +1,70 @@
 ---
-title: "Nix 管理可能なツールの探し方と運用の基本"
+title: "Nix のインストール"
 ---
 
 # 1. この章でやること
-この章では、Nix（nixpkgs）で管理できるツールの探し方と、ツールの更新方法を解説します。
+この章では **Nix のインストール**を行います。
 
 
-# 2. nixpkgs にツールがあるか調べる
-Nix がツールをビルドする際、[NixOS/nixpkgs という GitHub リポジトリ](https://github.com/NixOS/nixpkgs)から情報を取得します。
+# 2. インストール手順
+ワンコマンドで楽に Nix を導入できる Determinate Systems のインストーラーを利用します。
 
-こちらのサイトで nixpkgs に登録されているパッケージを検索できます。
+https://github.com/DeterminateSystems/nix-installer
 
-https://search.nixos.org/packages
-
-例えば、`vim` で探すと以下の様になります。
-
-![検索結果](/images/1c0373f3570334/c04/image.png)
-
-`nix-shell -p vim` と書かれているので、`vim` という名称で登録されていると判断できます。
-
-
-:::message
-**検索欄直下にある Channel について**。
-
-yy.mm のように数字で書かれた方はいわゆる安定版です。
-メジャーアップデートは提供されず、セキュリティアップデートが適時実施されます[^1]。
-半年毎（5 / 11 月）に新しいブランチがリリースされ、メジャーアップデートが行われます。
-
-**ツールの更新速度を優先する場合は、unstable を利用します**。
-不安定と書かれていますが、テスト済みアップデートのみが反映されるので、実質的には安定しています。
-
->master ブランチにてツールの情報が更新され、ビルドテストが実施された後、パスしたら unstable に反映されます。
-
-**特別な理由がなければ unstable を使うと思いますので、本書では unstable 利用前提で解説します**。
-:::
-
-[^1]: NixOS wiki > Nix channels: https://nixos.wiki/wiki/Nix_channels
-
-:::message
-Nix はプラットフォームに合わせたツールを自動的に導入してくれます。
-しかし、**ツールによっては未対応のプラットフォームがあります**。
-
-![対応アーキテクチャ](/images/1c0373f3570334/c04/image1.png)
-
-一般的な Windows WSL（`x86_64-linux`）ならほとんどの場合対応しています。
-Apple Silicon Mac（`aarch64-darwin`）は時々対応していないツールがある印象です。
-:::
-
-
-# 3. nixpkgs にない場合の方針
-nixpkgs に見当たらない場合は、**Homebrew で管理する**方針をおすすめします。
-Mac 向けの GUI アプリや専用ツールは Homebrew の方が揃っていることが多いです。
-
-「Nix に統一したい」場合は、後半の章で **nix-darwin で Homebrew を管理する方法**を解説するので、ご参照ください。
-
-
-# 4. ツールの更新
-Nix では、**ロックファイルを更新する**ことでツールを更新します。
+以下を実行します。
 
 ```bash:Bash
-nix flake update
+curl -fsSL https://install.determinate.systems/nix | sh -s -- install
 ```
 
-詳細は次章以降で扱いますが、大まかなイメージは以下の通りです。
+>前章でも言及しましたが、本書では Flakes という機能を利用する前提で解説します。
+このインストーラーを利用すると、Flakes の有効化など、便利な設定を自動で行ってくれます。
 
-1. `flake.nix` にてどのツールを導入するか等の設定を記述します。
-2. `flake.lock` で参照する nixpkgs のリビジョンを固定します。
+# 3. インストール確認
+ターミナルを開き直してから、以下で確認します。
 
-特定時点の nixpkgs で固定 = 各ツールのビルド手順が固定 = ツールのバージョンが固定されます。
+```bash:Bash
+nix --version
+```
 
-:::message
-ロックファイルの仕様上、**ツールは一斉に更新されます**。
-個別に更新する方法は後半で別途解説します。
-:::
+以下の様にバージョンが表示されればインストール完了です。
 
-:::message
-素の状態の Nix ではロックファイル（`flake.lock`）は生成しません。
-これは実験的機能 Flakes を用いた際の挙動になります。
+```bash:Bash
+nix (Determinate Nix x.xx.x) y.yy.y
+```
 
-**Flakes はその利便性から実質的なスタンダードとなっていますので、本書では Flakes 利用を前提として解説します**。
-:::
 
+# 4. 補足
+## 4.1 Nix とは？
+Nix は **再現性の高さ**が特徴のパッケージマネージャーです。
+構築する環境を**純粋関数型言語 Nix** で**宣言的に記述**します。
+
+慣れないうちはテンプレートを真似る・一部だけを改変する（ツールを追加するだけ等）で十分だと思います。
+以下のように言語ごとの設定ファイル（`flake.nix`）を公開している人もいます。
+
+https://github.com/the-nix-way/dev-templates
+
+Nix 言語について基礎から学びたい方はこちらの本がおすすめです。
+
+https://zenn.dev/asa1984/books/nix-introduction
+
+
+## 4.2 インストーラーについて
+Nix には様々なインストーラーが存在します。
+
+- [公式](https://nixos.org/download/)
+- [Determinate](https://github.com/DeterminateSystems/nix-installer)
+- [Lix](https://lix.systems/install/)
+
+公式のインストーラーと比べ、Determinate や Lix はアンインストールがしやすい、便利な機能を自動で有効にしてくれるといった利点があります。
+
+人によって推奨するインストーラーが異なりますが、本書では比較的メジャーな Determinate を利用します。
+興味が湧いたらそれぞれの違いを調べると良いと思います。
+
+
+## 4.3 アンインストール、更新
+インストーラーによってコマンドが異なります。
+
+Determinate の場合は下記ページの `Upgrading Determinate Nix` や `Uninstalling` を参照してください。
+
+https://github.com/DeterminateSystems/nix-installer?tab=readme-ov-file#upgrading-determinate-nix

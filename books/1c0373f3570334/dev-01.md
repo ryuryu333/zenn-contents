@@ -9,7 +9,7 @@ title: "第三部 開発環境の管理"
 
 
 # 2. 前提
-このレイヤーは、共通レイヤー（`entrypoint-01`, `common-02` 〜 `common-05`）が完了している前提です。
+このレイヤーは、共通レイヤー（`entrypoint-01`, `common-01` 〜 `common-04`）が完了している前提です。
 
 :::message
 `user` / `mac` レイヤーは必須ではありません。
