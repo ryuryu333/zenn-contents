@@ -1,7 +1,8 @@
 {
     "version": "0.2",
     "files": [
-        "articles/*.md"
+        "articles/*.md",
+        "books/**/*.md"
     ],
     "words": [
         "attrset",
