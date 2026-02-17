@@ -7,18 +7,29 @@ title: "Nix のインストール"
 
 
 # 2. インストール手順
-ワンコマンドで楽に Nix を導入できる Determinate Systems のインストーラーを利用します。
+NixOS コミュニティーで管理されているインストーラーを利用します。
 
-https://github.com/DeterminateSystems/nix-installer
+https://github.com/NixOS/nix-installer
 
 以下を実行します。
 
 ```bash:Bash
-curl -fsSL https://install.determinate.systems/nix | sh -s -- install
+curl -sSfL https://artifacts.nixos.org/nix-installer | sh -s -- install
 ```
 
->前章でも言及しましたが、本書では Flakes という機能を利用する前提で解説します。
-このインストーラーを利用すると、Flakes の有効化など、便利な設定を自動で行ってくれます。
+:::message
+WSL2、macOS、Linux などが対応しています。
+インストーラーがシステムに合わせて Nix インストールの Plan が作成されます。
+実行してよいか聞かれるので `y` を入力してください。
+:::
+
+:::message
+本書では Flakes という Nix の実験的機能を利用する前提で解説します。
+
+このインストーラーを利用すると、Flakes 有効化などの設定を自動で行ってくれます。
+また、アンインストール機能も付いており便利です。
+:::
+
 
 # 3. インストール確認
 ターミナルを開き直してから、以下で確認します。
@@ -27,44 +38,30 @@ curl -fsSL https://install.determinate.systems/nix | sh -s -- install
 nix --version
 ```
 
-以下の様にバージョンが表示されればインストール完了です。
+バージョンが表示されればインストール完了です。
 
 ```bash:Bash
-nix (Determinate Nix x.xx.x) y.yy.y
+nix (Nix) 2.33.3
 ```
 
 
 # 4. 補足
-## 4.1 Nix とは？
-Nix は **再現性の高さ**が特徴のパッケージマネージャーです。
-構築する環境を**純粋関数型言語 Nix** で**宣言的に記述**します。
+## 4.1 アンインストール
 
-慣れないうちはテンプレートを真似る・一部だけを改変する（ツールを追加するだけ等）で十分だと思います。
-以下のように言語ごとの設定ファイル（`flake.nix`）を公開している人もいます。
-
-https://github.com/the-nix-way/dev-templates
-
-Nix 言語について基礎から学びたい方はこちらの本がおすすめです。
-
-https://zenn.dev/asa1984/books/nix-introduction
+```bash:Bash
+/nix/nix-installer uninstall
+```
 
 
-## 4.2 インストーラーについて
-Nix には様々なインストーラーが存在します。
+## 4.2 更新
 
-- [公式](https://nixos.org/download/)
-- [Determinate](https://github.com/DeterminateSystems/nix-installer)
-- [Lix](https://lix.systems/install/)
-
-公式のインストーラーと比べ、Determinate や Lix はアンインストールがしやすい、便利な機能を自動で有効にしてくれるといった利点があります。
-
-人によって推奨するインストーラーが異なりますが、本書では比較的メジャーな Determinate を利用します。
-興味が湧いたらそれぞれの違いを調べると良いと思います。
+```bash:Bash
+sudo -i nix upgrade-nix
+```
 
 
-## 4.3 アンインストール、更新
-インストーラーによってコマンドが異なります。
+## 4.3 インストーラーの種類・違い
+本章で紹介した以外のインストーラーに興味がある方は、以下の記事を参照してください。
+主要なインストーラー 4 種について解説・比較検証しています。
 
-Determinate の場合は下記ページの `Upgrading Determinate Nix` や `Uninstalling` を参照してください。
-
-https://github.com/DeterminateSystems/nix-installer?tab=readme-ov-file#upgrading-determinate-nix
+https://zenn.dev/trifolium/articles/da11a428c53f65
