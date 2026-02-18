@@ -1,26 +1,120 @@
 ---
-title: "home-manager の設定整理と実践テクニック"
+title: "Home Manager の設定整理と実践テクニック"
 ---
 
 # 1. この章でやること
-この章では、home-manager を運用していく中で出てくる「こうしたい」を解決するためのテクニックを紹介します。
+この章では、Home Manager を運用していく中で出てくる「こうしたい」を解決するためのテクニックを紹介します。
 
 
-# 2. 設定ファイルの分割（imports）
-`home.nix` ファイルは分割できます。
+# 2. dotfiles として管理する
+ユーザー環境をバージョン管理するために `~/.config/home-manager` を Git 管理したくなるかと思います。
 
-`imports` に分割したファイルを列挙するだけで読み込めます。
+今後の利便性を考慮すると、`~/.config/home-manager` を直接 Git 管理せず、**`dotfiles` レポジトリの一部として管理する**のをお勧めします。
 
-```nix:~/.config/home-manager/home.nix
+:::message
+dotfiles に明確な定義はありませんが、一般的には、ホームディレクトリにある設定ファイル（`~/.gitconfig` 等）を意味します。
+
+転じて、ユーザー環境を管理することを指す言葉でもあります。
+:::
+
+
+筆者の場合、`~/work/dotfiles/home-manager` で `~/.config/home-manager` の内容を管理しています。
+
+----
+
+`~/.config/home-manager` から `~/work/dotfiles/home-manager/flake.nix` に設定ファイルを移動した場合、`home-manager switch` はエラーとなります。
+
+```bash:Bash
+$ home-manager switch                
+設定ファイルがありません。ファイルを /Users/ryu/.config/home-manager/home.nix に作ってください
+```
+
+**対処方法は 2 つです**。
+
+1. **シンボリックリンクを作成する**
+
+以下のように dotfiles 管理下の `flake.nix` を `~/.config/home-manager/flake.nix` としてリンクさせます。
+
+```bash:Bash
+ln -s ~/work/dotfiles/home-manager/flake.nix ~/.config/home-manager/flake.nix
+```
+
+これで従来のコマンドでユーザー環境を更新できます。
+
+```bash:Bash
+home-manager switch
+```
+
+2. **`--flake` オプションを使う**
+
+`--flake <flake.nix までのパス>` と指定します。
+
+例えば、`flake.nix` があるディレクトリ（`~/work/dotfiles/home-manager`）で以下のコマンドを実行すると、ユーザー環境を更新できます。
+
+```bash:Bash
+home-manager switch --flake .
+```
+
+
+# 3. 設定ファイルの分割
+`home.nix` にユーザー環境を定義していくと、次第にファイルが肥大化します。
+このままでは可読性・保守性が低くなってしまいます。
+
+そこで、**設定ファイルを分割すると管理が楽になります**。
+
+----
+
+例えば、以下のような `home.nix` があったとします。
+
+```nix:home-manager/home.nix
+{ config, pkgs, ... }:
+
 {
-  imports = [
-    ./modules/git.nix
-    ./modules/shell.nix
+  home.username = "ryu"; # ユーザー環境に依存
+  home.homeDirectory = "/Users/ryu"; # ユーザー環境に依存
+  home.stateVersion = "25.11"; # Home Manager のバージョンに依存
+
+  home.packages = [
+    vim
   ];
+
+  programs.git = {
+    enable = true;
+    settings = {
+      user = {
+        name = "MyNixName";
+        email = "MyEmail@example.com";
+      };
+    };
+  };
+
+  programs.zsh = ...
+
+  programs.home-manager.enable = true;
 }
 ```
 
-```nix:~/.config/home-manager/modules/git.nix
+仮に `programs.git` の記述が長くなった場合、Git だけの設定ファイルに分離すると管理しやすくなります。
+
+```nix:home-manager/home.nix
+{ config, pkgs, ... }:
+
+{
+  home.username = "ryu"; # ユーザー環境に依存
+  home.homeDirectory = "/Users/ryu"; # ユーザー環境に依存
+  home.stateVersion = "25.11"; # Home Manager のバージョンに依存
+
+  home.packages = [
+    vim
+  ];
+
+  programs.zsh = ...
+
+  programs.home-manager.enable = true;
+}
+```
+
+```nix:home-manager/modules/git.nix
 { pkgs, ... }:
 {
   programs.git = {
@@ -35,7 +129,72 @@ title: "home-manager の設定整理と実践テクニック"
 }
 ```
 
-設定を分割しておくと「どこに何が書いてあるか」が明確になり、運用が楽になります。
+:::message
+Home Manager の設定は任意の名前のファイル（`*.nix`）として記述できます。
+`*.nix` を保存するフォルダも任意です。
+:::
+
+
+`home.nix` と `git.nix` を Home Manager に読み込ませるには、大まかに 2 つ方法があります。
+
+
+1. **`home.nix` で imports する**
+
+以下のように記述すると、`git.nix` の内容を Home Manager 側で読み込めるようになります。
+
+```nix:home-manager/home.nix
+{ config, pkgs, ... }:
+
+{
+  home.username = "ryu"; # ユーザー環境に依存
+  home.homeDirectory = "/Users/ryu"; # ユーザー環境に依存
+  home.stateVersion = "25.11"; # Home Manager のバージョンに依存
+
+  imports = [
+    ./modules/git.nix
+  ];
+
+  home.packages = [
+    vim
+  ];
+
+  programs.zsh = ...
+
+  programs.home-manager.enable = true;
+}
+```
+
+
+2. **`flake.nix` で modules として指定する**
+
+`home-manager/flake.nix` ファイル後半に、`homeConfigurations."<username>" = ...` と書かれた行があるかと思います。
+
+`homeConfigurations` が `home-manager switch` する際に参照される情報です。
+**`modules = []` にて読み込む設定ファイルを指定します**。
+
+初期状態では、以下のように `home.nix` が指定されています。
+
+```nix:home-manager/flake.nix
+homeConfigurations."ryu" = home-manager.lib.homeManagerConfiguration {
+  inherit pkgs;
+
+  # Specify your home configuration modules here, for example,
+  # the path to your home.nix.
+  modules = [ ./home.nix ];
+
+  # Optionally use extraSpecialArgs
+  # to pass through arguments to home.nix
+};
+```
+
+`modules` に `git.nix` を追加します。
+
+```nix:home-manager/flake.nix
+  modules = [
+    ./home.nix
+    ./modules/git.nix
+  ];
+```
 
 
 # 3. 編集可能なリンク（mkOutOfStoreSymlink）
@@ -200,7 +359,7 @@ error:
 
 
 # 7. 世代管理とロールバック
-home-manager は `generations` という履歴を残します。
+Home Manager は `generations` という履歴を残します。
 設定ミスで環境が壊れた場合、**前の状態に戻すことが可能です**。
 
 ```bash:Bash
@@ -239,44 +398,3 @@ yyyy-mm-dd hh:mm : id 1 -> /nix/store/5jw2l0q4w2n6f782gffjk6xx728l2xx1-home-mana
 
 [^1]: 公式リリースノート > Release 25.11 > Highlights: https://nix-community.github.io/home-manager/release-notes.xhtml#sec-release-25.11
 
-
-# 8. dotfiles として管理する
-ユーザー環境のバージョン管理を行うために `~/.config/home-manager` を Git 管理したくなるかと思います。
-今後の利便性を考慮すると、`~/.config/home-manager` を直接 Git 管理せず、`dotfiles` レポジトリの一部として管理するのをお勧めします。
-
->dotfiles とはホームディレクトリにある設定ファイル（`~/.gitconfig` 等）を指します。転じて、ditfiles を管理することそのものを指す言葉でもあります。
-
-筆者の場合、`~/work/dotfiles/home-manager` で `~/.config/home-manager` の内容を管理しています。
-
-仮に `~/work/dotfiles/home-manager/flake.nix` のように設定ファイルを動かした場合、`home-manager switch` ではエラーとなります。
-
-```bash:Bash
-$ home-manager switch                
-設定ファイルがありません。ファイルを /Users/ryu/.config/home-manager/home.nix に作ってください
-```
-
-対処方法は 2 つです。
-
-- シンボリックリンクを作成する
-
-以下のように dotfiles 管理下の `flake.nix` を `~/.config/home-manager/flake.nix` としてリンクさせます。
-
-```bash:Bash
-ln -s ~/work/dotfiles/home-manager/flake.nix ~/.config/home-manager/flake.nix
-```
-
-これで従来のコマンドでユーザー環境を更新できます。
-
-```bash:Bash
-home-manager switch
-```
-
-- `--flake` オプションを使う
-
-`--flake <flake.nix までのパス>` と指定します。
-
-例えば、`~/work/dotfiles/home-manager` で以下のコマンドを実行すると、ユーザー環境を更新できます。
-
-```bash:Bash
-home-manager switch --flake .
-```
