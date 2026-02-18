@@ -2,40 +2,57 @@
 title: "第二部 ユーザー環境の管理"
 ---
 
-# 1. この章でやること
-この章では、ユーザー環境レイヤー（`user-*`）の進め方を整理します。
+第二部では、Home Manager でユーザー環境を管理する方法を解説します。
 
-本記事では、**このレイヤーで何ができるようになるか** と **どこまで進めればよいか** を明確にします。
+Nix では [Profiles という機能](https://nix.dev/manual/nix/2.25/package-management/profiles)を用いて、ユーザー環境にパッケージをインストールできます。
+この Profiles をベースにして、**ユーザー環境の管理に特化したツール**が Home Manager です。
 
+https://github.com/nix-community/home-manager
 
-# 2. 前提
-このレイヤーは、共通レイヤー（`entrypoint-01`, `common-01` 〜 `common-04`）が完了している前提です。
+----
+
+**Home Manager を利用することで、複雑な Nix 式を記述せずに設定を記述できます**。
+
+例えば、入れたいパッケージはリスト形式で記述するだけです。
+
+```nix:設定例
+home.packages = with pkgs; [
+  git
+  vim
+];
+```
+
+また、パッケージごとの設定ファイルを生成したり、既存の設定ファイルのシンボリックリンクを作成する機能もあり、便利です。
+
+```nix:設定例
+programs.git = {
+  settings = {
+    user = {
+      name = "MyNixName";
+      email = "MyEmail@example.com";
+    };
+  };
+};
+
+home.file = {
+  ".gitconfig".source = ./git/.gitconfig;
+};
+```
+
+----
+
+次章からは Home Manager でユーザー環境を管理する方法を解説していきます。
 
 :::message
-共通レイヤーが未実施の場合は、先に `common` レイヤーを進めてください。
+**Home Manager は既存のパッケージマネージャーと共存できます**。
+
+本書では、Homebrew でユーザー環境のパッケージを管理している状態から、Home Manager を導入する前提で解説します。
 :::
 
 
-# 3. 読む章
-以下の順で進めます。
+# 目次
 
-1. `user-02`: home-manager のインストール
-2. `user-03`: home-manager の基本操作
-3. `user-04`: 設定整理と実践テクニック
-4. `user-05`: Homebrew から home-manager への移行
-
-
-# 4. このレイヤーの完了条件
-以下を満たしていれば、このレイヤーは完了です。
-
-1. `home-manager switch` で設定を反映できる
-2. 主要な CLI ツールを home-manager 管理に移行できる
-3. 設定ファイル（例: `.gitconfig`）を宣言的に管理できる
-
-
-# 5. 次に進む判断
-この先は目的で分岐します。
-
-1. Mac 全体（Homebrew / システム設定）まで宣言管理したい: `mac-01` へ進む
-2. 開発環境の分離・再現を優先したい: `dev-01` へ進む
-3. まずはユーザー環境だけで運用したい: ここで止めて運用開始
+1. Home Manager のインストール
+2. Home Manager の基本的な使い方
+3. Home Manager の設定整理と実践テクニック
+4. Homebrew から Home Manager へ移行
