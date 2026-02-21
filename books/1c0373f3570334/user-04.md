@@ -15,6 +15,8 @@ title: "Home Manager の設定整理と実践テクニック"
 dotfiles に明確な定義はありませんが、一般的には、ホームディレクトリにある設定ファイル（`~/.gitconfig` 等）を意味します。
 
 転じて、ユーザー環境を管理することを指す言葉でもあります。
+
+**Nix（Home Manager）を活用すれば、どのパッケージをインストールするか。バージョンは何か、設定ファイルの内容をどうするか、といったことを一括でテキスト管理できます**。
 :::
 
 
@@ -196,20 +198,27 @@ homeConfigurations."ryu" = home-manager.lib.homeManagerConfiguration {
   ];
 ```
 
+:::message
+どちらの方法でも `git.nix` を指定する際は、設定を記述しているファイル（`home.nix` or `flake.nix`）を起点とした相対パスを利用します（絶対パスも可）。
+:::
 
-# 3. 編集可能なリンク（mkOutOfStoreSymlink）
-`home.file.toolname.source` で `.gitconfig` 等のシンボリックリンクを作成する場合、編集不可なファイルとして配置されます。
+
+# 4. 設定ファイルの書き込み禁止を回避する
+`home.file.<toolname>.source` で `.gitconfig` 等のシンボリックリンクを作成する場合、書き込み禁止なファイルとして配置されます。
 つまり、**`git config --global` で値を書き込めなくなります**。
 
-`dotfiles/git/.gitconfig` を直接編集して、`home-manager switch` するのは面倒です。
-そこで、「編集可能なリンク」にしておくと便利です。
+:::message
+パッケージによっては、設定ファイルが書き込み不可の状態だと正常に動作しない場合もあります。
+:::
 
-```nix:~/.config/home-manager/home.nix
+対策として、`mkOutOfStoreSymlink` を用いると書き込み可能な状態でシンボリックリンクが作成されます。
+
+```nix:home-manager/home.nix
 { config, ... }:
 {
   home.file = {
     ".gitconfig".source =
-      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/home-manager/git/.gitconfig";
+      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/work/dotfiles/home-manager/git/.gitconfig";
   };
 }
 ```
@@ -219,6 +228,149 @@ homeConfigurations."ryu" = home-manager.lib.homeManagerConfiguration {
 :::message
 `config.lib.file.mkOutOfStoreSymlink` の仕様で、**絶対パス**を指定する必要があります。
 `${config.home.homeDirectory}` で homeDirectory を取得できます。
+:::
+
+:::details 保守性を意識してコードを書いた場合
+最初のうちは上記の書き方でいいと思います。
+
+Nix に慣れた後「そういえば、もっと綺麗な書き方もあったな」と思い出す & 振り返っていただくため、Nix らしく書いたコードも提示します。
+
+先ほどのコード、私が実際に使うならば以下のように書きます。
+
+```nix:home-manager/home.nix
+{ config, ... }:
+let
+  inherit (config.lib.file) mkOutOfStoreSymlink;
+  dotfilesDir = "${config.home.homeDirectory}/work/dotfiles/home-manager";
+in
+{
+  home.file = {
+    ".gitconfig".source = mkOutOfStoreSymlink "${dotfilesDir}/git/.gitconfig";
+  };
+}
+```
+
+このような書き方に至る過程を解説します。
+
+----
+
+`let-in` は Nix 言語における変数のスコープを定めるキーワードです。
+`let` で変数を宣言・初期化した後、`in` で利用するイメージです。
+
+`inherit` はコード記述を簡略化するために使われます。
+
+```nix
+let
+  a = 1;
+in
+{
+  # 普通に書く場合
+  a = a;
+
+  # 省略して書くことができる
+  inherit a;
+}
+```
+
+`inherit ()` と書く場合、以下のように使えます。
+
+```nix
+let
+  x = {
+    a = 1;
+  };
+in
+{
+  # 普通に書く場合
+  a = x.a;
+
+  # 省略して書くことができる
+  inherit (x) a;
+}
+```
+
+最初に提示したコードで解説すると以下のようになります。
+
+```nix
+# 普通に書くと長い
+mkOutOfStoreSymlink = config.lib.file.mkOutOfStoreSymlink;
+
+# 短く記述できる
+inherit (config.lib.file) mkOutOfStoreSymlink;
+```
+
+----
+
+Nix では `{<引数>}: <式>` という形式で関数を定義します。
+つまり、先ほど作成した `git.nix` ファイル全体で 1 つの関数となっています。
+
+```nix
+# config が引数
+{ config, ... }:
+
+# 以降が式
+{
+  home.file = ...
+}
+```
+
+関数の式の中では引数を参照できます。
+そのため、以下のように `config` という変数を利用できます。
+
+```nix
+{ config, ... }:
+let
+  hoge = config.lib....
+```
+
+最初に提示したコードで解説すると以下のようになります。
+
+```nix
+# config が引数
+{ config, ... }:
+
+# これ以降が式
+let
+  # 関数の引数 config を式の中で利用している
+  inherit (config.lib.file) mkOutOfStoreSymlink;
+in
+{
+  # let で宣言した mkOutOfStoreSymlink を使用している
+  home.file = {
+    ".gitconfig".source = mkOutOfStoreSymlink ...
+  };
+}
+```
+
+----
+
+最後に、`.gitconfig` などへの絶対パスの記述を楽にするため、固定的なパスは変数化しています。
+
+```nix
+dotfilesDir = "${config.home.homeDirectory}/work/dotfiles/home-manager";
+```
+
+なお、先ほどのコードと `config` を参照する際の書き方が変わっています（`${config}` となっている）。
+
+これは、変数を文字列（`""`）の中で利用するためです。
+
+----
+
+ここまでの内容を全て使うと、以下のようになります。
+
+```nix:~/.config/home-manager/home.nix
+{ config, ... }:
+let
+  inherit (config.lib.file) mkOutOfStoreSymlink;
+  dotfilesDir = "${config.home.homeDirectory}/work/dotfiles/home-manager";
+in
+{
+  home.file = {
+    ".gitconfig".source = mkOutOfStoreSymlink "${dotfilesDir}/git/.gitconfig";
+  };
+}
+```
+
 :::
 
 
