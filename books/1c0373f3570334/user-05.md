@@ -1,5 +1,5 @@
 ---
-title: "Homebrew から home-manager へ移行"
+title: "Home Manager へ既存パッケージを移行する"
 ---
 
 # 1. この章でやること
