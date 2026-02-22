@@ -3,15 +3,16 @@ title: "Home Manager へ既存パッケージを移行する"
 ---
 
 # 1. この章でやること
-この章では、Homebrew で入れていた Git を home-manager に移行することを目標にします。
+この章では、既存のパッケージマネージャで入れていた Git を Home Manager に移行する流れを解説します。
+
+>Homebrew を例に説明しますが、他のパッケージマネージャでも同様の流れです。
 
 
 # 2. 最終形のイメージ
-home-manager の設定は `~/.config/home-manager` に集約します。
-この章のゴールは以下のような構成です。
+Home Manager の設定は `~/work/dotfiles/home-manager` に集約します。
 
 ```:フォルダ構成
-~/.config/home-manager/
+~/work/dotfiles/home-manager/
 ├── flake.lock
 ├── flake.nix
 ├── git
@@ -19,19 +20,8 @@ home-manager の設定は `~/.config/home-manager` に集約します。
 └── home.nix
 ```
 
-:::message
-本章では `~/.config/home-manager` にファイルを置いていますが、私は `~/work/dotfiles/home-manager` にて管理しています。
 
-`home-manager switch` は `~/.config/home-manager` を参照するので、シンボリックリンクを作成しています。
-
-```bash:Bash
-ln -s ~/work/dotfiles/home-manager ~/.config/home-manager
-```
-
-:::
-
-
-# 3. Git を home-manager で管理する
+# 3. Git を Home Manager で管理する
 ## 3.1 home.nix に Git を追加
 `home.nix` に Git を追加します。
 
@@ -50,12 +40,15 @@ home-manager switch
 
 :::message
 前章でも解説しましたが、Homebrew と競合しないので、まだ Homebrew の Git をアンインストールしなくても大丈夫です。
+
 移行が確認できてからアンインストールします。
 :::
 
 
 ## 3.2 Git の設定ファイルを一緒に管理する
-`~/.config/home-manager/git/.gitconfig` を用意し、既存の設定をコピペし、`home.nix` を以下のように記述します。
+`home-manager/git/.gitconfig` を作成し、既存の設定をコピペしておきます。
+
+`home.nix` にて以下のように記述します。
 
 ```nix:~/.config/home-manager/home.nix
   home.file = {
@@ -64,7 +57,7 @@ home-manager switch
 ```
 
 :::message
-このままだと、すでに `~/.gitconfig` があった場合、home-manager が配置しようとする `.gitconfig` と競合します。
+すでに `~/.gitconfig` があった場合、home-manager が配置しようとする `.gitconfig` と競合します。
 
 以下のコマンドを利用すると、既存の `~/.gitconfig` を `<filename>.backup` に置き換えてくれます。
 
@@ -72,19 +65,15 @@ home-manager switch
 home-manager switch -b backup
 ```
 
-本章では、明示的に手動で動かすスタイルにします。
-どちらでもいいです。
-:::
-
-`~/.gitconfig` を削除します。
-
->不安ならバックアップしてください。
+もしくは、既存の `~/.gitignore` を削除（不安ならリネームでバックアップ）してください。
 
 ```bash:Bash
 rm ~/.gitconfig
 ```
 
-home-manager の設定を反映します。
+:::
+
+Home Manager の設定を反映します。
 
 ```bash:Bash
 home-manager switch
@@ -104,6 +93,8 @@ which git
 /Users/ryu/.nix-profile/bin/git
 ```
 
+>Homebrew の方が表示された場合、`which -a git` を試してみてください。
+
 Homebrew 管理の Git を削除します。
 
 ```bash:Bash
@@ -120,12 +111,12 @@ brew uninstall git
 https://search.nixos.org/packages
 
 
-# 6. nixpkgs にないツールについて
-Mac 専用のツールや一部の GUI ベースのアプリは nixpkgs に登録されていません。
+# 6. Nixpkgs にないツールについて
+Mac 専用のツールや一部の GUI ベースのアプリは Nixpkgs に登録されていません。
 そういったツールは Homebrew 管理のままにしてください。
 
 :::message
 今の状態ですと、PC 買い替え時に `home-manager switch` だけではユーザー環境が再現できず、Homebrew でのインストール作業も必要となります。
 
-**次章から解説する nix-darwin を用いると、Homebrew も Nix で宣言的に管理でき、ワンコマンドで home-manager / Homebrew 管理下のツールを構築可能になります**。
+**第三部で解説する nix-darwin を用いると、Homebrew も Nix で一括管理でき、ワンコマンドで Home Manager・Homebrew 管理下のツールを構築可能になります**。
 :::
