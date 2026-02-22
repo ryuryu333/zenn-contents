@@ -3,7 +3,7 @@ title: "Home Manager へ既存パッケージを移行する"
 ---
 
 # 1. この章でやること
-この章では、**Homebrew で入れていた Git を home-manager に移行する**ことを目標にします。
+この章では、Homebrew で入れていた Git を home-manager に移行することを目標にします。
 
 
 # 2. 最終形のイメージ

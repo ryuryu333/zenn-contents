@@ -3,7 +3,7 @@ title: "Home Manager のインストール"
 ---
 
 # 1. この章でやること
-この章では **Home Manager のインストール**を行います。
+この章では Home Manager のインストールを行います。
 
 :::message
 手順は[公式リファレンス > Nix Flakes > Standalone setup](https://nix-community.github.io/home-manager/index.xhtml#ch-nix-flakes) に準拠しています。
