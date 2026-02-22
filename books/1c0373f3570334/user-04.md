@@ -374,12 +374,11 @@ in
 :::
 
 
-# 4. 設定ファイルの置き方（xdg.configFile）
+# 5. ホーム直下以外に設定ファイルを配置する
 `home.file` はホーム直下以外にもファイルを配置できます。
-
 また、`xdg.configFile` を用いると `~/.config` 配下に置けるため便利です。
 
-```nix:~/.config/home-manager/home.nix
+```nix:home-manager/home.nix
 {
   # ~/.gitconfig として配置
   home.file.".gitconfig".source = ./git/.gitconfig;
@@ -393,79 +392,27 @@ in
 }
 ```
 
-先ほど紹介した `mkOutOfStoreSymlink` と `xdg.configFile` を組み合わせると管理しやすいと思います。
 
-```nix:~/.config/home-manager/home.nix
-  xdg.configFile."git/config".source =
-    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/home-manager/git/.gitconfig";
-```
-
-
-# 5. unfree license ライセンスのパッケージの扱い方
-nixpkgs にはライセンスの都合で **unfree** 扱いとなるパッケージがあります。
+# 6. unfree license ライセンスのパッケージの扱い方
+Nixpkgs にはライセンスの都合で **unfree** 扱いとなるパッケージがあります。
 デフォルトでは利用できないため、許可を明示する必要があります。
 
-:::details エラー例（vsocde）
+:::details エラー例
 `pkgs.vscode` を指定した状態で `home-manager switch` すると、以下のようなエラーとなります。
+
+<!-- cspell:disable -->
 
 ```bash:Bash
 $ home-manager switch
-error:
-       … while calling the 'derivationStrict' builtin
-         at «nix-internal»/derivation-internal.nix:37:12:
-           36|
-           37|   strict = derivationStrict drvAttrs;
-             |            ^
-           38|
-
-       … while evaluating derivation 'home-manager-generation'
-         whose name attribute is located at «github:nixos/nixpkgs/ffbc9f8»/pkgs/stdenv/generic/make-derivation.nix:541:13
-
-       … while evaluating attribute 'buildCommand' of derivation 'home-manager-generation'
-         at «github:nixos/nixpkgs/ffbc9f8»/pkgs/build-support/trivial-builders/default.nix:80:17:
-           79|         enableParallelBuilding = true;
-           80|         inherit buildCommand name;
-             |                 ^
-           81|         passAsFile = [ "buildCommand" ] ++ (derivationArgs.passAsFile or [ ]);
-
-       … while evaluating the option `home.activation.checkFilesChanged.data':
-
-       … while evaluating definitions from `/nix/store/any8bfqi1w7qqih45zzwf5azi9nzclyp-source/modules/files.nix':
-
-       … while evaluating the option `home.file."Library/Fonts/.home-manager-fonts-version".onChange':
-
-       … while evaluating definitions from `/nix/store/any8bfqi1w7qqih45zzwf5azi9nzclyp-source/modules/targets/darwin/fonts.nix':
-
-       (stack trace truncated; use '--show-trace' to show the full, detailed trace)
-
+  # ...
        error: Package ‘vscode-1.107.1’ in /nix/store/i1cgqsz2xxfz8h43f1g1fa4w6m8mdb40-source/pkgs/applications/editors/vscode/vscode.nix:102 has an unfree license (‘unfree’), refusing to evaluate.
-
-       a) To temporarily allow unfree packages, you can use an environment variable
-          for a single invocation of the nix tools.
-
-            $ export NIXPKGS_ALLOW_UNFREE=1
-
-          Note: When using `nix shell`, `nix build`, `nix develop`, etc with a flake,
-                then pass `--impure` in order to allow use of environment variables.
-
-       b) For `nixos-rebuild` you can set
-         { nixpkgs.config.allowUnfree = true; }
-       in configuration.nix to override this.
-
-       Alternatively you can configure a predicate to allow specific packages:
-         { nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-             "vscode"
-           ];
-         }
-
-       c) For `nix-env`, `nix-build`, `nix-shell` or any other Nix command you can add
-         { allowUnfree = true; }
-       to ~/.config/nixpkgs/config.nix.
 ```
+
+<!-- cspell:enable -->
 
 :::
 
-- すべて許可する場合
+1. **すべて許可する場合**
 
 ```nix:~/.config/home-manager/home.nix
   nixpkgs.config.allowUnfree = true;
@@ -475,7 +422,7 @@ error:
   ];
 ```
 
-- 特定のパッケージだけ許可する場合
+2. **特定のパッケージだけ許可する場合**
 
 ```nix:~/.config/home-manager/home.nix
   nixpkgs.config.allowUnfreePredicate = pkg:
@@ -489,25 +436,11 @@ error:
 ```
 
 :::message
-個人の好みだと思いますが、`allowUnfreePredicate` を用いて個別に許可を出す形式の方が宣言的なので個人的には好きです。
+`allowUnfreePredicate` を用いて個別に許可を出す形式の方が宣言的なので個人的には好きです。
 ただし、unfree なツールを追加するたびに編集が必要となります。
+
 手軽さからか、`allowUnfree` を利用している例も多く見かける印象です。
 :::
-
-
-# 6. shellAliases の活用
-シェルのエイリアスも管理できます。
-
-```nix:~/.config/home-manager/home.nix
-{
-  programs.zsh = {
-    enable = true;
-    shellAliases = {
-      gs = "git status";
-    };
-  };
-}
-```
 
 
 # 7. 世代管理とロールバック
@@ -522,13 +455,15 @@ home-manager switch --rollback
 
 https://nix-community.github.io/home-manager/index.xhtml#sec-usage-rollbacks
 
----
+----
 
-世代一覧を確認し、特定の世代の環境をロードすることも可能です。
+世代一覧を表示できます。
 
 ```bash:Bash
 home-manager generations
 ```
+
+<!-- cspell:disable -->
 
 ```bash:Bash
 > home-manager generations                                                    
@@ -537,11 +472,15 @@ yyyy-mm-dd hh:mm : id 2 -> /nix/store/ycp9a0r6syzi2rk7gpjsqw94hkpw7iq3-home-mana
 yyyy-mm-dd hh:mm : id 1 -> /nix/store/5jw2l0q4w2n6f782gffjk6xx728l2xx1-home-manager-generation
 ```
 
-`nix/store/...` の末尾に `activate` を付けて実行します。
+特定の世代のロードも行えます。
+
+`nix/store/...` の末尾に `activate` を付けて実行すると、特定の世代をロードできます。
 
 ```bash:Bash
 /nix/store/r18xhwqgcpqw9278280bl4qvk5ldg25g-home-manager-generation/activate
 ```
+
+<!-- cspell:enable -->
 
 :::message
 `activate` を直接実行する方法はレガシーな方法です[^1]。
