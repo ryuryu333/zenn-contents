@@ -39,7 +39,6 @@ title: "nix-darwin のインストール"
           {
             nixpkgs.hostPlatform = "<platform>";
             system.stateVersion = 6;
-            nix.enable = false;
           }
         ];
       };
