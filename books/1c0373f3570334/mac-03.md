@@ -3,21 +3,48 @@ title: "nix-darwin の基本的な使い方"
 ---
 
 # 1. この章でやること
-この章では **nix-darwin の基本的な使い方**を解説します。
-また、推奨されている基本的な設定について解説します。
-
-:::message
-操作例として 1 つだけ Mac のシステム設定を変更します。
-
-より詳しいシステム設定方法については個別の章で解説します。
-また、home-manager や Homebrew の管理についても次章以降にて扱います。
-:::
+この章では nix-darwin の基本的な使い方を解説します。
 
 
 # 2. 最小構成で動かす
+本セクションでは、操作例として 1 つだけ Mac のシステム設定を変更します。
+
+:::message
+具体的には、sudo コマンドの認証に Touch ID を利用できるように設定します。
+
+通常、[macOS Sonomaのエンタープライズ向けの新機能](https://support.apple.com/ja-jp/109030)に記述されている通り、`/etc/pam.d/sudo_local` を作成・編集する必要があります。
+
+```:参考 コマンド例
+sudo cp /etc/pam.d/sudo_local.template /etc/pam.d/sudo_local
+sudo vim /etc/pam.d/sudo_local
+```
+
+```zsh:Zsh
+> cat /etc/pam.d/sudo_local
+# sudo_local: local config file which survives system update and is included for sudo
+# uncomment following line to enable Touch ID for sudo
+auth       sufficient     pam_tid.so
+```
+
+新しい Mac を買うたびに上記操作をするのは面倒です（そもそも、このような設定をしたことを忘れているかもしれません）。
+
+nix-darwin を用いて、この設定をテキストで宣言的に記述・管理していきます。
+:::
+
+
 ## 2.1 設定ファイルを編集する
-本セクションでは、sudo コマンドの認証に Touch ID を利用できるように設定します。
+
 `security.pam.services.sudo_local.touchIdAuth = true;` を `flake.nix` に追記します。
+
+```diff nix:~/work/dotfiles/flake.nix
+  modules = [
+    {
+      nixpkgs.hostPlatform = "<platform>";
+      system.stateVersion = 6;
++     security.pam.services.sudo_local.touchIdAuth = true;
+    }
+  ];
+```
 
 ```nix:~/work/dotfiles/flake.nix
 {
@@ -39,7 +66,6 @@ title: "nix-darwin の基本的な使い方"
           {
             nixpkgs.hostPlatform = "<platform>";
             system.stateVersion = 6;
-            nix.enable = false;
             security.pam.services.sudo_local.touchIdAuth = true;
           }
         ];
@@ -51,24 +77,50 @@ title: "nix-darwin の基本的な使い方"
 ## 2.2 反映する
 `flake.nix` を配置しているディレクトリ（`~/work/dotfiles`）にて以下を実行します。
 
-```bash:Bash
+```zsh:Zsh
 sudo darwin-rebuild switch --flake .
 ```
 
 
-# 3. flake.nix の配置場所
-`darwin-rebuild switch` コマンドは `/etc/nix-darwin/flake.nix` を探します。
-前章では `~/work/dotfiles` に `flake.nix` を作成したので、`switch --flake .` オプションを付ける必要があります。
+# 2.3 確認
+`/etc/pam.d/sudo_local` を確認すると、以下のように設定が反映されているはずです。
+
+```zsh:Zsh
+# switch 前
+> cat /etc/pam.d/sudo_local
+
+# switch 後
+> cat /etc/pam.d/sudo_local
+auth       sufficient     pam_tid.so
+```
+
+
+:::message
+nix-darwin では他にも様々な設定が記述でき、[公式ドキュメント](https://nix-darwin.github.io/nix-darwin/manual) に設定一覧が記載されています。
+
+ドキュメントはかなりの長さですので、リファレンスとして利用してください。
+どのような設定があるかは、他者の dotfiles であったり、以降の章で紹介する設定例を参考にするのが良いかと思います。
+
+----
+
+ちなみに、今回使った設定は[公式ドキュメントの security.pam.services.sudo_local.touchIdAuth](https://nix-darwin.github.io/nix-darwin/manual/#opt-security.pam.services.sudo_local.touchIdAuth) に記載されています。
+:::
+
+
+# 3. switch コマンドの簡略化
+**`darwin-rebuild switch` コマンドは `/etc/nix-darwin/flake.nix` を探します**。
+
+前章では `~/work/dotfiles` に `flake.nix` を作成したので、`switch --flake .` オプションを付け、利用する `flake.nix` を指定する必要があります。
 
 任意の設定ですが、私はコマンドを簡略化したいので、`/etc/nix-darwin/` にシンボリックリンクを作成しています。
 
-```bash:Bash
+```zsh:Zsh
 sudo ln -s /Users/ryu/work/dotfiles/flake.nix /etc/nix-darwin/flake.nix
 ```
 
 :::message
 以降は `/etc/nix-darwin/flake.nix` がある前提でコマンドを提示します。
-シンボリックリンクを作成しない場合は、`sudo darwin-rebuild switch` コマンドに `switch --flake .` をつけてください。
+シンボリックリンクを作成しない場合は、`sudo darwin-rebuild switch` コマンドに `--flake .` をつけてください。
 :::
 
 
@@ -80,26 +132,25 @@ modules = [
   {
     nixpkgs.hostPlatform = "<platform>";
     system.stateVersion = 6;
-    nix.enable = false;
     security.pam.services.sudo_local.touchIdAuth = true;
   }
 ]
 ```
 
 nix-darwin の設定が増えてくると可読性が落ち、管理が手間になります。
-そこで、`configuration.nix` として分離します。
+そこで、設定ファイルを分離します。
 
->ファイル名は任意です。
+`configuration.nix` を以下のような内容で作成します。
 
 ```nix:~/work/dotfiles/configuration.nix
 {
-  nixpkgs.hostPlatform = "aarch64-darwin";
+  nixpkgs.hostPlatform = "<platform>";
   system.stateVersion = 6;
-  nix.enable = false;
+  security.pam.services.sudo_local.touchIdAuth = true;
 }
 ```
 
-`flake.nix` にて `modules` のリストに `configuration.nix` を渡します。
+`flake.nix` にて `modules` のリストに `configuration.nix` を指定します。
 
 ```nix:~/work/dotfiles/flake.nix
 {
@@ -127,6 +178,8 @@ nix-darwin の設定が増えてくると可読性が落ち、管理が手間に
 
 
 :::message
+`modules` には `flake.nix` からの相対パスを記述してください。
+
 `configuration.nix` が慣習的に使われることが多いですが、ファイル名は任意です。
 設定が増えた場合、複数の `~.nix` に分割すると管理が楽かと思います。
 :::
@@ -137,12 +190,12 @@ nix-darwin の設定が増えてくると可読性が落ち、管理が手間に
 以下のコマンドで世代一覧を確認できます。
 古いものから順に表示されるため、`tail` で最近の世代だけ表示させています。
 
-```bash:Bash
+```zsh:Zsh
 sudo darwin-rebuild --list-generations | tail -n 5
 ```
 
-```bash:Bash
-$ sudo darwin-rebuild --list-generations | tail -n 5
+```zsh:Zsh
+> sudo darwin-rebuild --list-generations | tail -n 5
   1    yyyy-mm-dd hh:mm:ss   
   2    yyyy-mm-dd hh:mm:ss   
   3    yyyy-mm-dd hh:mm:ss   
@@ -154,29 +207,31 @@ $ sudo darwin-rebuild --list-generations | tail -n 5
 ## 5.2 ロールバック
 1 つ前の世代に戻りたい場合、以下を実行します。
 
-```bash:Bash
+```zsh:Zsh
 sudo darwin-rebuild --rollback
 ```
 
 特定の世代も指定できます。
 
-```bash:Bash
+```zsh:Zsh
 sudo darwin-rebuild --switch-generation <generation>
 ```
 
-```bash:Bash
-$ sudo darwin-rebuild --rollback
+#### コマンド実行例
 
-$ sudo darwin-rebuild --list-generations | tail -n 5
+```zsh:Zsh
+> sudo darwin-rebuild --rollback
+
+> sudo darwin-rebuild --list-generations | tail -n 5
   1    yyyy-mm-dd hh:mm:ss   
   2    yyyy-mm-dd hh:mm:ss   
   3    yyyy-mm-dd hh:mm:ss   
   4    yyyy-mm-dd hh:mm:ss   (current)
   5    yyyy-mm-dd hh:mm:ss   
 
-$ sudo darwin-rebuild --switch-generation 3
+> sudo darwin-rebuild --switch-generation 3
 
-$ sudo darwin-rebuild --list-generations | tail -n 5
+> sudo darwin-rebuild --list-generations | tail -n 5
   1    yyyy-mm-dd hh:mm:ss   
   2    yyyy-mm-dd hh:mm:ss   
   3    yyyy-mm-dd hh:mm:ss   (current)
@@ -185,14 +240,48 @@ $ sudo darwin-rebuild --list-generations | tail -n 5
 ```
 
 
-## 5.3 システム構築情報（ハッシュ値）の管理
+## 5.3 システム構築情報の記録
 ### 5.3.1 configurationRevision の設定
-nix-darwin には、現在のシステムがどの Git コミットの `flake.nix` から構築されたかを記録する仕組みがあります。
+nix-darwin には、現在のシステム環境がどの Git コミット（リビジョン）から構築されたかを記録する仕組みがあります。
 
->`flake.nix` を Git 管理している前提です。
 
-環境が壊れた際、どこの変更が原因であったかの調査等に有用かと思うので、設定に加えます。
-`configuration.nix` を以下のように編集します。
+:::message
+`flake.nix` や `configuration.nix` などを含むリポジトリの情報が対象となります。
+本書では dotfiles リポジトリとして管理していることを前提に記述しています。
+:::
+
+**環境が壊れた際、どこの変更が原因であったかの調査等に有用かと思うので、設定に加えるのをお勧めします**。
+`configuration.nix` と `flake.nix` を以下のように編集します。
+
+```diff nix:~/work/dotfiles/configuration.nix
++ {
++   self,
++   ...
++ }:
+  {
+    nixpkgs.hostPlatform = "<platform>";
+    system.stateVersion = 6;
++   system.configurationRevision = self.rev or self.dirtyRev or null;
+  }
+```
+
+```diff nix:~/work/dotfiles/flake.nix
+    outputs =
+-     { nixpkgs, nix-darwin, ... }:
++     { self, nixpkgs, nix-darwin, ... }:
+      {
+        darwinConfigurations."<hostname>" = nix-darwin.lib.darwinSystem {
++         specialArgs = { inherit self; };
+          modules = [
+            ./configuration.nix
+          ];
+        };
+      };
+```
+
+
+:::details コードコピペ用
+長いので折りたたみ。
 
 ```nix:~/work/dotfiles/configuration.nix
 {
@@ -200,14 +289,11 @@ nix-darwin には、現在のシステムがどの Git コミットの `flake.ni
   ...
 }:
 {
-  nixpkgs.hostPlatform = "aarch64-darwin";
+  nixpkgs.hostPlatform = "<platform>";
   system.stateVersion = 6;
-  nix.enable = false;
   system.configurationRevision = self.rev or self.dirtyRev or null;
 }
 ```
-
-`flake.nix` は以下のように記述します。
 
 ```nix:~/work/dotfiles/flake.nix
 {
@@ -234,68 +320,94 @@ nix-darwin には、現在のシステムがどの Git コミットの `flake.ni
 }
 ```
 
+:::
+
+
+
+
+
 
 :::details コードの解説（難しかったら読み飛ばしてください）
 これまでのサンプルコードと見た目が大きく変わったと思うので、補足します。
 
-まず、解説のために `configurationRevision` をシンプルに記述します。
+まず、**解説のために `flake.nix` だけで設定を記述するシンプルなスタイルで考えてみます**。
 
 `configurationRevision` の他に、`outputs = {}` にて `self` が追記されていることに注目してください。
 
-```nix:~/work/dotfiles/flake.nix
+```diff nix:~/work/dotfiles/flake.nix
   outputs =
-    { self, nixpkgs, nix-darwin, ... }:
+-   { nixpkgs, nix-darwin, ... }:
++   { self, nixpkgs, nix-darwin, ... }:
     {
       darwinConfigurations."<hostname>" = nix-darwin.lib.darwinSystem {
         modules = [
-          {
-            nixpkgs.hostPlatform = "<platform>";
-            system.stateVersion = 6;
-            nix.enable = false;
-            system.configurationRevision = self.rev or self.dirtyRev or null;
-          }
++         {
++           nixpkgs.hostPlatform = "<platform>";
++           system.stateVersion = 6;
++           system.configurationRevision = self.rev or self.dirtyRev or null;
++         }
         ];
       };
     };
 ```
 
-`self` は `flake.nix` 自身を意味します。
+`self` は `flake.nix` 自身のメタデータが収納されています。
 `rev` は Git のリビジョン（どのコミット位置か）を意味します。
 
-`self.rev` で `flake.nix` のコミット位置（ハッシュ値）を取得できます。
+**`self.rev` で `flake.nix` が管理されているリポジトリのコミット位置を取得できます**。
 
 >`self.rev` は Clean（全てコミット済み）な状態が前提なので、未コミット時は `self.dirtyRev` からハッシュ値を取得します。
 
----
+ここで取得されるリビジョン情報は `nix flake metadata --json` を `dotfiles` ディレクトリにて実行すれば `revision` という欄で確認できます。
 
-`configurationRevision` にて `self` を利用するため、`outputs = {}` にて `self` を記述しています。
-
->この outputs の書き方は Flakes 特有ですので、こう書くもの、と理解してください（解説すると複雑になるので）。
-
----
-
-次は、この設定を `configuration.nix` に分離します。
-
-```nix:~/work/dotfiles/configuration.nix
+```zsh:Zsh
+> nix flake metadata --json
 {
-  nixpkgs.hostPlatform = "aarch64-darwin";
-  system.stateVersion = 6;
-  nix.enable = false;
-  system.configurationRevision = self.rev or self.dirtyRev or null;
+# 中略...
+  "revision": "74dd96960fa1be335e96a8790d034f58e6b9ecb8",
+  "url": "git+file:///Users/ryu/work/dotfiles?ref=refs/heads/main&rev=74dd96960fa1be335e96a8790d034f58e6b9ecb8"
 }
 ```
 
-このままだと、`error: attribute 'self' missing` となります。
+----
 
-そのため、`flake.nix` から `self` を `configuration.nix` に渡す必要があります。
+`configurationRevision` にて `self` を利用するため、`outputs = {}` にて `self` を記述しています。
+
+```diff nix:~/work/dotfiles/flake.nix
+  outputs =
+-   { nixpkgs, nix-darwin, ... }:
++   { self, nixpkgs, nix-darwin, ... }:
+    {
+      darwinConfigurations."<hostname>" = nix-darwin.lib.darwinSystem {
+```
+
+**この outputs という仕組みは Flakes 特有**ですので、こう書くもの、と理解してください（解説すると複雑になるので）。
+
+重要なのは、`flake.nix` において `self` は自動的に定義される特別な変数であり、`self` 経由で様々なメタデータを取得できる、ということです。
+
+----
+
+次に、`flake.nix` に直接記述していた設定を `configuration.nix` に分離します。
+
+```diff nix:~/work/dotfiles/configuration.nix
+  {
+    nixpkgs.hostPlatform = "<platform>";
+    system.stateVersion = 6;
++   system.configurationRevision = self.rev or self.dirtyRev or null;
+  }
+```
+
+このままだと、switch しても、`error: attribute 'self' missing` となります。
+
+そのため、**`flake.nix` から `self` を `configuration.nix` に渡す必要があります**。
 以下のように `specialArgs` を利用します。
 
-```nix:~/work/dotfiles/flake.nix
+```diff nix:~/work/dotfiles/flake.nix
   outputs = 
     { self, nixpkgs, nix-darwin, ... }:
     {
       darwinConfigurations."MacBook" = nix-darwin.lib.darwinSystem {
-        specialArgs = { inherit self; };
++       specialArgs = { inherit self; };
         modules = [
           ./configuration.nix
         ];
@@ -307,46 +419,64 @@ nix-darwin には、現在のシステムがどの Git コミットの `flake.ni
 より書き下すと、`specialArgs.self = self` となります。
 これは、specialArgs の self として、既存の変数である self を代入しています。
 
+nix-darwin の仕組み（`nix-darwin.lib.darwinSystem`）として、`specialArgs` で定義された変数は `modules` に渡されます。
+
+>Nix 言語の用語を使って言い直すと、`specialArgs` のアトリビュートセットが `modules` に定義されている関数の引数として渡されます。
+
+----
+
 次に、`configuration.nix` にて `self` を受け取る準備をします。
 
-```nix:~/work/dotfiles/configuration.nix
-{
-  self,
-  ...
-}:
-{
-  nixpkgs.hostPlatform = "aarch64-darwin";
-  system.stateVersion = 6;
-  nix.enable = false;
-  system.configurationRevision = self.rev or self.dirtyRev or null;
-}
+```diff nix:~/work/dotfiles/configuration.nix
++ {
++   self,
++   ...
++ }:
+  {
+    nixpkgs.hostPlatform = "<platform>";
+    system.stateVersion = 6;
+    nix.enable = false;
+    system.configurationRevision = self.rev or self.dirtyRev or null;
+  }
 ```
 
 これは、引数として `self` を受け取るという意味になります。
 
 >Nix 言語において、`{}:{}`（<引数>:<式>）で関数を定義できます。
-`modules` のリストとして `~.nix` を指定すると、`specialArgs` で指定した変数が渡されます。
-
 >nix-darwin では、`lib`、`config`、`pkgs` はデフォルトで `modules` に指定した `~.nix` へ渡されます。
 `self` は対象外なので、`specialArgs` を利用して明示的に渡す必要があります。
 
-結果、`self.rev` を評価すると `flake.nix` のコミットハッシュとなり、それを `configurationRevision` に代入できるようになりました。
+これで switch を実行してもエラーが発生しなくなりました。
 :::
 
-### 5.3.2 ハッシュ値の確認
-現在の世代がどの `flake.nix` から構築したか、以下のコマンドで確認できます。
 
-```bash:Bash
+### 5.3.2 コミット位置の確認
+現在の世代がどのリビジョンから構築したか、以下のコマンドで確認できます。
+
+```zsh:Zsh
 darwin-version --configuration-revision
 ```
 
-出力された値は現在の `flake.nix` のコミットハッシュ値になっているはずです。
+:::message
+なお、`--json` オプションを利用すると、より多くの情報が確認できます。
+
+```zsh:Zsh
+> darwin-version --json                  
+{
+  "configurationRevision": "74dd96960fa1be335e96a8790d034f58e6b9ecb8",
+  "darwinLabel": "26.05.9f48ffa",
+  "darwinRevision": "9f48ffaca1f44b3e590976b4da8666a9e86e6eb1",
+  "nixpkgsRevision": "a82ccc39b39b621151d6732718e3e250109076fa"
+}
+```
+
+:::
 
 
-# 6. stateVersion
+# 6. 後方互換性（stateVersion）
 `system.stateVersion` は後方互換性を確保するための設定です。
 
-執筆時点では 6 が最新であり、最新の nix-darwin をインストールしているので 6 を指定しています。
+執筆時点（2026/2）では 6 が最新です。
 
 ```nix:~/work/dotfiles/configuration.nix
 {
@@ -355,21 +485,24 @@ darwin-version --configuration-revision
 }
 ```
 
-インストールした時期に依存するので、公式リファレンスを確認し、必要に応じて変更してください。
+インストールした時期に依存するので、公式リファレンスにて Default 値を確認してください。
 
 https://nix-darwin.github.io/nix-darwin/manual/index.html#opt-system.stateVersion
 
-nix-darwin をアップデートした際、この値は原則変えません。
+**nix-darwin を使い始めてからは、原則、この値を変更しないでください**。
 
-まず、以下のコマンドでリリースノートを表示し、`stateVersion` の変更指示があるかを確認します。
-更新内容が自身の環境に悪影響を及ばさないと判断した後、指示に従って値を変更してください。
+もし nix-darwin をアップデートした場合、以下のコマンドでリリースノートを表示し、`stateVersion` の変更指示があるかを確認します。
 
-```bash:Bash
+破壊的変更がある場合は `stateVersion` が変わるかと思います。
+自身の環境に悪影響を及ばさないと判断できる場合、または、壊れても対処する時間的余裕がある場合のみ、指示に従って値を変更してください。
+
+
+```zsh:Zsh
 darwin-rebuild changelog
 ```
 
-```bash:Bash
-$ darwin-rebuild changelog
+```zsh:Zsh
+> darwin-rebuild changelog
 # ...
 
 2025-01-18
