@@ -3,7 +3,7 @@ title: "nix-darwin で Mac のシステム設定を管理する"
 ---
 
 # 1. この章でやること
-この章では、nix-darwin で **Mac のシステム設定を宣言的に管理する**例を紹介します。
+この章では、nix-darwin で Mac のシステム設定を宣言的に管理する例を紹介します。
 
 
 # 2. カスタマイズの進め方
@@ -18,74 +18,13 @@ https://nix-darwin.github.io/nix-darwin/manual/
 以降では、私が利用している設定を紹介します。
 
 :::message
-これまでの章を実施済み = home-manager と homebrew を nix-darwin で管理している前提です。
-
-これらを nix-darwin で管理していない場合、`homebrew.nix` と `home_manager.nix` の解説部分を無視してください。
-それ以外の箇所は Mac 本体の設定なので、参考にできるはずです。
-:::
-
-
-# 3. 全体の構成
-参考までに、私の構成例を示します。
-
-```:フォルダ構成
-~/work/dotfiles/
-├── flake.nix
-├── flake.lock
-├── home.nix # home-manager 設定
-├── nix-darwin/
-│    ├── configuration.nix # 基本設定
-│    ├── nixpkgs.nix # nixpkgs 設定
-│    ├── home_manager.nix # home-manager module 設定
-│    ├── homebrew.nix # homebrew 設定
-│    └── system.nix # 本体設定
-└── ... # git/.gitconfig 等
-```
-
-```nix:flake.nix
-{
-  description = "nix-darwin configuration";
-
-  inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    nix-darwin = {
-      url = "github:nix-darwin/nix-darwin";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-  };
-
-  outputs =
-    {
-      self,
-      nixpkgs,
-      nix-darwin,
-      home-manager,
-      ...
-    }:
-    {
-      darwinConfigurations."MacBook" = nix-darwin.lib.darwinSystem {
-        specialArgs = { inherit self; };
-        modules = [
-          ./nix-darwin/configuration.nix
-          home-manager.darwinModules.home-manager
-        ];
-      };
-    };
-}
-```
-
-:::message
 本章の解説では、ホスト名 `MacBook`、ユーザ名 `ryu`、システム `aarch64-darwin` として記述しています。
 各自の環境に合わせて値を置き換えてください。
 :::
 
 
-# 4. 基本の設定
-`configuration.nix` にて、nix-darwin の基本的な設定、および、各設定の読み込みを定義しています。
+# 3. 基本の設定
+nix-darwin の基本的な設定を記述していきます。
 
 ```nix:configuration.nix
 {
@@ -109,89 +48,53 @@ https://nix-darwin.github.io/nix-darwin/manual/
   # ホームディレクトリを指定
   users.users.ryu.home = "/Users/ryu";
 
-  # Determinate-Nix を利用している場合、必須
-  nix.enable = false;
-
   # 利用するシェルを指定する
   programs.zsh.enable = true;
-  # programs.fish.enable = true;
-
-  # 各種設定をロード
-  imports = [
-    ./nixpkgs.nix
-    ./home_manager.nix
-    ./homebrew.nix
-    ./system.nix
-  ];
+  # programs.fish.enable = true;  # 他のシェルの場合
 }
 ```
 
-# 5. home-manager の設定
-`home_manager.nix` にて、home-manager の設定を定義しています。
-
-```nix:home_manager.nix
-{
-  home-manager.useGlobalPkgs = true;
-  home-manager.useUserPackages = true;
-  home-manager.users."ryu" = {
-    imports = [
-      ../home.nix
-    ];
-  };
-}
-```
-
-
-# 6. Homebrew の設定
-`homebrew.nix` にて、Homebrew の設定を定義しています。
-
-```nix:homebrew.nix
-{
-  homebrew = {
-    enable = true;
-    user = "ryu";
-    onActivation = {
-      cleanup = "uninstall";
-      upgrade = true;
-      autoUpdate = false;
-    };
-    global.autoUpdate = false;
-    brews = [
-    ];
-    casks = [
-      "linearmouse"
-      "elecom-mouse-util"
-    ];
-  };
-}
-```
-
-
-# 7. Mac 本体の設定
-`system.nix` にて、Mac 本体の設定を定義しています。
-
+# 4. システム設定の探し方
 メジャーな設定は nix-darwin の設定が用意されています。
 
-例えば、`defaults write com.apple.dock show-recents -bool false` を nix-darwin で設定したい場合、`show-recents` で nix-darwin リファレンスを単語検索します。
+例えば、Dock に最近使ったアプリアイコンを表示しない設定にする場合を考えてみます。
+
+通常では、システム設定の GUI から変更するか、以下のコマンドを実行します。
+
+```zsh:Zsh
+defaults write com.apple.dock show-recents -bool false
+```
+
+nix-darwin で設定したい場合、`show-recents` で [nix-darwin リファレンス](https://nix-darwin.github.io/nix-darwin/manual/)を単語検索します。
 すると、`system.defaults.dock.show-recents` がヒットしますので、以下のように設定可能と分かります。
 
 ```nix
 system.defaults.dock.show-recents = false
 ```
 
-一方、単語検索してもヒットしない場合、`system.defaults.CustomUserPreferences` を利用して設定を記述します。
+このように、nix-darwin の設定項目は `defaults` コマンドに似た名前が付けられていることが多いです。
 
-```nix
-# CLI での設定コマンド
-# defaults write -g "WebAutomaticSpellingCorrectionEnabled" -bool false
+# 5. nix-darwin に用意されていない設定の場合
+nix-darwin のリファレンスで見つからない設定を記述したい場合、`system.defaults.CustomUserPreferences` を利用します。
 
-# nix-darwin の記述に置き換え
+**`defaults` コマンドでの設定方法を調べ、コマンドの記述を `system.defaults.CustomUserPreferences` に書き換えるイメージです**。
+
+```zsh:CLI での設定コマンド
+defaults write -g "WebAutomaticSpellingCorrectionEnabled" -bool false
+```
+
+```nix:nix-darwin の記述に置き換え
 system.defaults.CustomUserPreferences = {
   NSGlobalDomain.WebAutomaticSpellingCorrectionEnabled = false;
 };
 ```
 
-以下は、ネット検索で出てくる Mac 購入後おすすめ設定集を nix-darwin で書いています。
+
+# 6. Mac システム設定例
+以下はネット検索で出てくる Mac 購入後おすすめ設定集を参考にして、nix-darwin に落とし込んだ例です。
+
+
+<!-- cspell:disable -->
 
 ```nix:homebrew.nix
 {
@@ -256,7 +159,11 @@ system.defaults.CustomUserPreferences = {
 }
 ```
 
-また、nix-darwin ではキーマッピングを変更することも可能です。
+<!-- cspell:enable -->
+
+
+
+また、nix-darwin ではキーマッピングを変更できます。
 詳細は以下の記事を参照ください。
 
 https://zenn.dev/trifolium/articles/a6fc32a05be6d0
