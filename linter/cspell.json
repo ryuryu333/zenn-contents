@@ -52,6 +52,7 @@
         "passthru",
         "pkgs",
         "pytest",
+        "recents",
         "repology",
         "ryuryu",
         "Ryzen",
