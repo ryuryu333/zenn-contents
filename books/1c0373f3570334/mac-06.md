@@ -48,6 +48,9 @@ nix-darwin の基本的な設定を記述していきます。
   # ホームディレクトリを指定
   users.users.ryu.home = "/Users/ryu";
 
+  # nix-darwin による Nix 管理を無効化  
+  nix.enable = false;
+
   # 利用するシェルを指定する
   programs.zsh.enable = true;
   # programs.fish.enable = true;  # 他のシェルの場合
