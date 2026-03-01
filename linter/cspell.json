@@ -55,6 +55,7 @@
         "otool",
         "passthru",
         "pkgs",
+        "pyproject",
         "pytest",
         "recents",
         "repology",
