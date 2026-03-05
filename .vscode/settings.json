@@ -1,9 +1,11 @@
 {
     "udon.baseDirectories": [
-        ["articles/*.md", "${workspaceFolder}/images/$fileBasenameNoExtension"]
+        ["articles/*.md", "${workspaceFolder}/images/$fileBasenameNoExtension"],
+        ["books/**/*.md", "${workspaceFolder}/images/${relFileDir:${workspaceFolder}/books}/$fileBasenameNoExtension"]
     ],
     "udon.rule": [
         ["articles/*.md", "![](/${relImage:${workspaceFolder}})"],
+        ["books/**/*.md", "![](/${relImage:${workspaceFolder}})"],
         ["*.md", "![](${relImage})"],
         ["*", "${relImage:${workspaceFolder}}"]
     ],
