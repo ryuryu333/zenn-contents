@@ -17,22 +17,34 @@ https://github.com/NixOS/nix-installer
 curl -sSfL https://artifacts.nixos.org/nix-installer | sh -s -- install
 ```
 
-:::message
-WSL2、macOS、Linux などが対応しています。
 インストーラーがシステムに合わせて Nix インストールの Plan が作成されます。
 実行してよいか聞かれるので `y` を入力してください。
+
+:::message
+**WSL2、macOS、Linux などが対応しています**。
+Windows の場合、WSL 環境内でのみ Nix を利用できます。ホスト側の管理は Nix で出来ません。
 :::
 
 :::message
-本書では Flakes という Nix の実験的機能を利用する前提で解説します。
+**このインストーラーを利用すると、Flakes 有効化などの設定を自動で行ってくれます**。
+**また、アンインストール機能も付いており便利です**。
 
-このインストーラーを利用すると、Flakes 有効化などの設定を自動で行ってくれます。
-また、アンインストール機能も付いており便利です。
+----
+
+本書では Flakes という Nix の実験的機能（experimental features）を利用する前提で解説します。
+
+>「実験的機能」と名前が厳ついですが、Flakes は事実上のデファクトスタンダードな機能ですので、有効化しても支障ありません。
 :::
 
 
 # 3. インストール確認
-ターミナルを開き直してから、以下で確認します。
+インストーラーから指示されたコマンドを実行します。
+
+```bash:Bash
+`. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh`
+```
+
+Nix コマンドが利用可能か以下で確認します。
 
 ```bash:Bash
 nix --version
@@ -40,7 +52,8 @@ nix --version
 
 バージョンが表示されればインストール完了です。
 
-```bash:Bash
+```bash:実行例
+$ nix --version
 nix (Nix) 2.33.3
 ```
 
