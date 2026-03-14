@@ -23,7 +23,7 @@ https://nix-darwin.github.io/nix-darwin/manual/
 :::
 
 
-# 3. 基本の設定
+# 3. 基本的の設定
 nix-darwin の基本的な設定を記述していきます。
 
 ```nix:configuration.nix
@@ -57,25 +57,26 @@ nix-darwin の基本的な設定を記述していきます。
 }
 ```
 
+
 # 4. システム設定の探し方
-メジャーな設定は nix-darwin の設定が用意されています。
+メジャーな設定は nix-darwin に設定が用意されています。
 
 例えば、Dock に最近使ったアプリアイコンを表示しない設定にする場合を考えてみます。
-
 通常では、システム設定の GUI から変更するか、以下のコマンドを実行します。
 
 ```zsh:Zsh
 defaults write com.apple.dock show-recents -bool false
 ```
 
-nix-darwin で設定したい場合、`show-recents` で [nix-darwin リファレンス](https://nix-darwin.github.io/nix-darwin/manual/)を単語検索します。
+**nix-darwin で設定したい場合、`show-recents` で [nix-darwin リファレンス](https://nix-darwin.github.io/nix-darwin/manual/)を単語検索します**。
 すると、`system.defaults.dock.show-recents` がヒットしますので、以下のように設定可能と分かります。
 
 ```nix
 system.defaults.dock.show-recents = false
 ```
 
-このように、nix-darwin の設定項目は `defaults` コマンドに似た名前が付けられていることが多いです。
+このように、**nix-darwin の設定項目は `defaults` コマンドに似た名前が付けられていることが多いです**。
+
 
 # 5. nix-darwin に用意されていない設定の場合
 nix-darwin のリファレンスで見つからない設定を記述したい場合、`system.defaults.CustomUserPreferences` を利用します。
@@ -99,7 +100,7 @@ system.defaults.CustomUserPreferences = {
 
 <!-- cspell:disable -->
 
-```nix:homebrew.nix
+```nix:configuration.nix
 {
   pkgs,
   ...
@@ -171,7 +172,7 @@ system.defaults.CustomUserPreferences = {
 
 https://zenn.dev/trifolium/articles/a6fc32a05be6d0
 
-```nix:homebrew.nix
+```nix:configuration.nix
 {
   pkgs,
   ...
@@ -212,3 +213,25 @@ https://zenn.dev/trifolium/articles/a6fc32a05be6d0
   };
 }
 ```
+
+
+# 7. 設定の管理
+上記の通り、`configuration.nix` に記載する内容は長くなりがちです。
+
+Home Manager と同様に、設定ファイルを分割すると楽です。
+
+```:分割例
+nix-darwin/
+├── configuration.nix
+├── home_manager.nix
+├── homebrew.nix
+├── nixpkgs.nix
+└── system.nix
+```
+
+>次章以降で扱う内容ですが、Home Manager や Homebrew の設定用の記述も単独のファイルで管理しています。
+
+他の方々と比べると簡素ですが、私の dotfiles は以下で公開しています。
+ご参考までに。
+
+https://github.com/ryuryu333/dotfiles
