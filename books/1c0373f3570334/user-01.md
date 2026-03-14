@@ -52,7 +52,7 @@ home.file = {
 
 # 目次
 
-1. Home Manager のインストール
-2. Home Manager の基本的な使い方
-3. Home Manager の設定整理と実践テクニック
-4. Homebrew から Home Manager へ移行
+[1. Home Manager のインストール](https://zenn.dev/trifolium/books/1c0373f3570334/viewer/user-02)
+[2. Home Manager の基本的な使い方](https://zenn.dev/trifolium/books/1c0373f3570334/viewer/user-03)
+[3. Home Manager の設定整理と実践テクニック](https://zenn.dev/trifolium/books/1c0373f3570334/viewer/user-04)
+[4. Home Manager へ既存パッケージを移行する](https://zenn.dev/trifolium/books/1c0373f3570334/viewer/user-05)
