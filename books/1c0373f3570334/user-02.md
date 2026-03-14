@@ -151,7 +151,14 @@ https://github.com/nix-community/home-manager
 https://nix-community.github.io/home-manager/index.xhtml
 
 
-## 6.2 インストール方法の種類
+## 6.2 アンインストール
+
+```bash:Bash
+home-manager uninstall
+```
+
+
+## 6.3 インストール方法の種類
 Home Manager の導入方法は大きく分けて **Standalone** と **モジュール**の 2 パターンあります。
 
 | 方法 | 概要 |
@@ -170,7 +177,7 @@ Home Manager の導入方法は大きく分けて **Standalone** と **モジュ
 :::
 
 
-## 6.3 バージョン管理方法の種類
+## 6.4 バージョン管理方法の種類
 Home Manager 本体、および、導入するパッケージのバージョン管理方法は **nix-channel / Flake** の 2 パターンあります。
 
 nix-channel が標準的な方法とされていますが、バージョン情報を Git 管理に反映させるのが手間です。
