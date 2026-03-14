@@ -318,7 +318,7 @@ darwin-version --configuration-revision
 
 執筆時点（2026/2）では 6 が最新です。
 
-```nix:~/work/dotfiles/configuration.nix
+```nix:configuration.nix
 {
   # ...
   system.stateVersion = 6;
