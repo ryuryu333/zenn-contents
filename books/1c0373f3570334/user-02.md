@@ -6,26 +6,120 @@ title: "Home Manager のインストール"
 この章では Home Manager のインストールを行います。
 
 :::message
-手順は[公式リファレンス > Nix Flakes > Standalone setup](https://nix-community.github.io/home-manager/index.xhtml#ch-nix-flakes) に準拠しています。
+手順は[公式リファレンス > Nix Flakes > Standalone setup](https://nix-community.github.io/home-manager/index.xhtml#ch-nix-flakes) をベースにしています。
 :::
 
 
-# 2. インストール
-任意の場所で以下のコマンドを実行します。
+# 2. dotfiles ディレクトリの準備
+ユーザー環境を管理するためのディレクトリとして、`~/work/dotfiles` を用意します（場所は任意）。
+**今後の工程ではこのディレクトリに全ての設定ファイルを集約していきます**。
 
-```bash:Bash
-nix run home-manager/master -- init --switch
-```
+:::details dotfiles とは
+明確な定義はありませんが、一般的には、ホームディレクトリにある設定ファイル（`~/.gitconfig` 等）を意味します。
 
-Home Manager のダウンロード処理が行われるので、完了まで十数秒かかるかと思います。
+転じて、ユーザー環境を管理することを指す言葉でもあります。
+:::
 
 :::message
-インストール処理の過程で `~/.config/home-manager/` に設定ファイル（`flake.nix`、`home.nix`）が生成されます。
-次章ではこの `home.nix` を編集して、Home Manager を利用します。
+既存の dotfiles がある場合でも、Home Manager の設定を同居されることは可能だと思います。
+今後の解説では、`dotfiles/flake.nix`、`dotfiles/flake.lock`、`dotfiles/home-manager/*` を作成していきます。
+他のフォルダ・ファイルがあっても（基本的には）問題は起こらないはずです。
 :::
 
 
-# 3. インストール確認
+# 3. 設定ファイルの作成
+dotfiles ディレクトリに移動してから、以下のコマンドを実行します。
+
+```bash:Bash
+cd ~/work/dotfiles
+```
+
+```bash:Bash
+nix run home-manager/master -- init .
+```
+
+
+:::details コマンド解説
+`nix run ...` とすると、パッケージをインストールせずに実行できます（`npx` コマンドみたいなイメージ）。
+
+```bash:Bash
+# home-manager をインストールせずに実行
+nix run home-manager/master -- <command>
+
+# インストール済みの環境における下記コマンドと同義
+home-manager <command>
+```
+
+`home-manager init` で設定ファイルを自動生成できます。
+
+```bash:Bash
+home-manager init <path>
+```
+
+>path 未指定時はデフォルト値（`~/.config/home-manager`）に生成されます。
+
+:::
+
+
+:::message
+Home Manager のダウンロード処理が行われるので、完了まで十数秒かかるかと思います。
+:::
+
+
+Home Manager の `init` コマンドにより `dotfiles/flake.nix`、`dotfiles/home.nix` が生成されます。
+Git 管理に加えてください。
+
+```bash:Bash
+git init
+git add flake.nix home.nix
+git commit -m "generate Home Manager config file"
+```
+
+:::details add しなかった場合
+Nix の仕様により、`flake.nix` が Git 追跡状態で無い場合、今後の工程で以下のようなエラーが発生します。
+
+```bash:Bash
+$ nix run home-manager/master -- switch --flake .
+# ...
+error: Path 'flake.nix' in the repository "/home/ryu/work/dotfiles" is not tracked by Git.
+# ...
+```
+
+**Nix ではコマンド操作する前に新規ファイルは `git add` する、と覚えておくとよいでしょう**。
+
+>補足すると、より正確には Nix の Flakes という機能の仕様です。
+Flakes では Git 追跡されたファイルのみを利用します（通常の操作の場合）。
+そのため、`flake.nix` 本体や `flake.nix` 内で参照するファイルが Git 追跡されていないと、ファイルが見つからない！とエラーが発生します。
+
+:::
+
+
+# 4. インストール
+以下のコマンドで Home Manager をインストールします。
+
+```bash:Bash
+nix run home-manager/master -- switch --flake .
+```
+
+
+:::details コマンド解説
+`nix run` を使い、ユーザー環境にない home-manager コマンドを利用しています。
+
+書き下すと、以下のようなコマンドになります。
+
+```bash:Bash
+home-manager switch --flake .
+```
+
+`switch` コマンドで Home Manager の設定ファイルを読み込み、ユーザー環境に反映できます。
+
+`--flake` オプションを付けると、参照する設定ファイルを指定できます。
+未指定時は `~/.config/home-manager/flake.nix` が参照されます。
+
+:::
+
+
+# 5. インストール確認
 以下で確認します。
 
 ```bash:Bash
@@ -34,18 +128,30 @@ home-manager --version
 
 バージョンが表示されればインストール完了です。
 
+```bash:Bash
+$ home-manager --version
+26.05-pre
+```
+
 :::message
 この段階では、Home Manager がインストールされただけで、ユーザー環境に変化は起こりません。
 Homebrew 管理下のパッケージは問題なく利用できます。
 :::
 
 
-# 4. シェルの設定
-Home Manager を利用する前に 1 つだけ前準備が必要です[^1]。
+# 6. インストール後の操作
+## 6.1 ロックファイル
+インストールの過程で、`flake.lock` が自動的に生成されたはずです。
+
+**このロックファイルで Home Manager 本体のバージョンや今後追加するパッケージのバージョンが固定されます**。
+
+ユーザー環境の再現に必須なファイルなので、`git add` しておいてください。
+
+
+## 6.2 シェルの設定
+利用しているシェルにて Home Manager が作成した環境変数を利用可能にするため、以下を `~/.profile`（Bash）や `~/.zprofile`（Zsh）等に追記してください[^1]。
 
 [^1]: 公式リファレンス > Installing Home Manager > Standalone installation > 4.: https://nix-community.github.io/home-manager/index.xhtml#sec-install-standalone
-
-利用しているシェルにて Home Manager が作成した環境変数を利用可能にするため、以下を `~/.profile`（Bash）や `~/.zprofile`（Zsh）等に追記してください。
 
 ```bash
 . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
@@ -54,8 +160,8 @@ Home Manager を利用する前に 1 つだけ前準備が必要です[^1]。
 これで作業は完了です。
 
 
-# 5. 補足
-## 5.1 参考資料
+# 7. 補足
+## 7.1 参考資料
 
 - Home Manager GitHub ページ
 
@@ -66,7 +172,7 @@ https://github.com/nix-community/home-manager
 https://nix-community.github.io/home-manager/index.xhtml
 
 
-## 5.2 インストール方法の種類
+## 7.2 インストール方法の種類
 Home Manager の導入方法は大きく分けて **Standalone** と **モジュール**の 2 パターンあります。
 
 | 方法 | 概要 |
@@ -85,7 +191,7 @@ Home Manager の導入方法は大きく分けて **Standalone** と **モジュ
 :::
 
 
-## 5.3 バージョン管理方法の種類
+## 7.3 バージョン管理方法の種類
 Home Manager 本体、および、導入するパッケージのバージョン管理方法は **nix-channel / Flake** の 2 パターンあります。
 
 nix-channel が標準的な方法とされていますが、バージョン情報を Git 管理に反映させるのが手間です。
