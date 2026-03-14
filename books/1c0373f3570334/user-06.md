@@ -24,30 +24,6 @@ title: "Home Manager の実践テクニック"
 }
 ```
 
-:::message
-**配置予定の場所にすでにファイルがあった場合、`switch` でエラーが発生します**。
-
-```bash:Bash
-$ home-manager switch --flake .
-Existing file '/home/ryu/.gitconfig' would be clobbered
-```
-
-**エラーが出ているファイルを削除かリネームしてください**。
-なお、手動でリネームする代わりに `-b` オプションを使って `switch` すると楽です。
-
-```bash:Bash
-home-manager switch --flake . -b backup
-```
-
-```bash:Bash
-$ ls -a ~ | grep .git
-.gitconfig
-.gitconfig.backup  # Home Manager によりリネームされた .gitconfig
-```
-
-:::
-
-
 
 # 3. 設定ファイルの書き込み禁止を回避する
 `home.file.<toolname>.source` で `.gitconfig` 等のシンボリックリンクを作成する場合、書き込み禁止なファイルとして配置されます。
