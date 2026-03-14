@@ -161,15 +161,15 @@ darwin-version
 ```
 
 
-# 5. 補足
-## 5.1 アンインストール
+# 6. 補足
+## 6.1 アンインストール
 
 ```zsh:Zsh
 sudo nix run nix-darwin#darwin-uninstaller
 ```
 
 
-## 5.2 flake.nix の配置場所について
+## 6.2 flake.nix の配置場所について
 公式ドキュメントでは `/etc/nix-darwin` に `flake.nix` を作成・配置しています。
 
 個人の好みですが、私は `/etc` のファイルを直接編集したり、Git 管理したくないです。
