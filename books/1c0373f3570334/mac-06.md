@@ -1,214 +1,256 @@
 ---
-title: "nix-darwin で Mac のシステム設定を管理する"
+title: "nix-darwin で Homebrew を管理する"
 ---
 
 # 1. この章でやること
-この章では、nix-darwin で Mac のシステム設定を宣言的に管理する例を紹介します。
+この章では、nix-darwin で Homebrew を管理し、パッケージをインストール・更新する方法を解説します。
 
 
-# 2. カスタマイズの進め方
-nix-darwin は多種多様な設定が可能です。
-時間に余裕がある場合、nix-darwin のリファレンスを流し読みすると色々な設定が知れるので面白いと思います。
+# 2. Homebrew 本体を Nix で管理する
+[nix-homebrew](https://github.com/zhaofengli/nix-homebrew) を用いると、Homebrew 本体のインストール・バージョンを管理できます。
 
-https://nix-darwin.github.io/nix-darwin/manual/
-
-とはいえ、最初は設定項目が多すぎて何から手をつけるべきか分からなくなります。
-まずは他者の設定（dotfiles）を真似つつ、自分の好みにカスタマイズしていくとスムーズだと思います。
-
-以降では、私が利用している設定を紹介します。
-
-:::message
-本章の解説では、ホスト名 `MacBook`、ユーザ名 `ryu`、システム `aarch64-darwin` として記述しています。
-各自の環境に合わせて値を置き換えてください。
-:::
-
-
-# 3. 基本の設定
-nix-darwin の基本的な設定を記述していきます。
-
-```nix:configuration.nix
-{
-  pkgs,
-  self,
-  ...
-}:
-{
-  system = {
-    # 後方互換性のための値、nix-darwin 本体のバージョン依存
-    # 原則、各自がインストールした際に設定した値のままにしてください
-    stateVersion = 6;
-
-    # ビルド時の設定ファイルのコミット位置を記録
-    configurationRevision = self.rev or self.dirtyRev or null;
-
-    # Mac 本体のユーザー設定を変更する際に必要
-    primaryUser = "ryu";
-  };
-
-  # ホームディレクトリを指定
-  users.users.ryu.home = "/Users/ryu";
-
-  # nix-darwin による Nix 管理を無効化  
-  nix.enable = false;
-
-  # 利用するシェルを指定する
-  programs.zsh.enable = true;
-  # programs.fish.enable = true;  # 他のシェルの場合
-}
-```
-
-# 4. システム設定の探し方
-メジャーな設定は nix-darwin の設定が用意されています。
-
-例えば、Dock に最近使ったアプリアイコンを表示しない設定にする場合を考えてみます。
-
-通常では、システム設定の GUI から変更するか、以下のコマンドを実行します。
-
-```zsh:Zsh
-defaults write com.apple.dock show-recents -bool false
-```
-
-nix-darwin で設定したい場合、`show-recents` で [nix-darwin リファレンス](https://nix-darwin.github.io/nix-darwin/manual/)を単語検索します。
-すると、`system.defaults.dock.show-recents` がヒットしますので、以下のように設定可能と分かります。
-
-```nix
-system.defaults.dock.show-recents = false
-```
-
-このように、nix-darwin の設定項目は `defaults` コマンドに似た名前が付けられていることが多いです。
-
-# 5. nix-darwin に用意されていない設定の場合
-nix-darwin のリファレンスで見つからない設定を記述したい場合、`system.defaults.CustomUserPreferences` を利用します。
-
-**`defaults` コマンドでの設定方法を調べ、コマンドの記述を `system.defaults.CustomUserPreferences` に書き換えるイメージです**。
-
-```zsh:CLI での設定コマンド
-defaults write -g "WebAutomaticSpellingCorrectionEnabled" -bool false
-```
-
-```nix:nix-darwin の記述に置き換え
-system.defaults.CustomUserPreferences = {
-  NSGlobalDomain.WebAutomaticSpellingCorrectionEnabled = false;
-};
-```
-
-
-# 6. Mac システム設定例
-以下はネット検索で出てくる Mac 購入後おすすめ設定集を参考にして、nix-darwin に落とし込んだ例です。
-
+`flake.nix` を以下のように編集します。
 
 <!-- cspell:disable -->
 
-```nix:homebrew.nix
+```diff nix:~/work/dotfiles/flake.nix
 {
-  pkgs,
-  ...
-}:
-{
-  system.defaults = {
-    NSGlobalDomain = {
-      # マウス/トラックパッド
-      "com.apple.swipescrolldirection" = true; # ナチュラルスクロールを有効化
-      # キーボード
-      NSAutomaticCapitalizationEnabled = false; # 文頭の自動大文字化を無効化
-      NSAutomaticPeriodSubstitutionEnabled = false; # ピリオドの自動置換を無効化
-      NSAutomaticSpellingCorrectionEnabled = false; # スペル自動修正を無効化
-      NSAutomaticDashSubstitutionEnabled = false; # ダッシュの自動置換を無効化
-      NSAutomaticQuoteSubstitutionEnabled = false; # クォートの自動置
-      # UI
-      AppleInterfaceStyle = "Dark"; # ダークモードを有効化
-      NSWindowResizeTime = 0.001; # ウィンドウのリサイズ速度を高速化
+  description = "nix-darwin setup";
+
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nix-darwin = {
+      url = "github:nix-darwin/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
-    # Finder
-    finder = {
-      AppleShowAllExtensions = true; # ファイル拡張子を常に表示
-      AppleShowAllFiles = true; # 隠しファイルを表示
-      FXDefaultSearchScope = "SCcf"; # 検索範囲をカレントフォルダに設定
-      ShowPathbar = true; # パスバーを表示
-      FXEnableExtensionChangeWarning = false; # ファイル拡張子変更の警告を無効化
-      FXPreferredViewStyle = "Nlsv"; # デフォルトの表示方法をリストビューに設定
-    };
-    # Dock
-    dock = {
-      show-process-indicators = true; # 起動中アプリをインジケーターに表示
-      show-recents = false; # 最近使ったアプリを非表示
-      launchanim = false; # アプリ起動時のアニメーションを無効化
-      mineffect = "scale"; # ウィンドウを閉じるときのエフェクトをスケールに設定
-    };
-    # 画面キャプチャ
-    screencapture = {
-      target = "clipboard"; # スクリーンショットの保存先をクリップボードに設定
-      disable-shadow = true; # スクリーンショットの影を無効化
-    };
-    # その他
-    CustomUserPreferences = {
-      NSGlobalDomain = {
-        # キーボード
-        WebAutomaticSpellingCorrectionEnabled = false; # スペル自動修正を無効化 (WebView)
-        # Finder
-        AppleMenuBarVisibleInFullscreen = true; # フルスクリーン時にメニューバーを表示
-      };
-    };
++   nix-homebrew.url = "github:zhaofengli/nix-homebrew";
   };
 
-  # 電源設定
-  power = {
-    sleep = {
-      allowSleepByPowerButton = false; # 電源ボタンでスリープを無効化
-      computer = 60; # 自動スリープまでの時間（分）
-      display = 60; # ディスプレイの自動スリープまでの時間（分）
+  outputs =
+    {
+      self,
+      nixpkgs,
+      nix-darwin,
++     nix-homebrew,
+      ...
+    }:
+    {
+      darwinConfigurations."<hostname>" = nix-darwin.lib.darwinSystem {
+        specialArgs = { inherit self; };
+        modules = [
+          ./configuration.nix
++         nix-homebrew.darwinModules.nix-homebrew
++         {
++           nix-homebrew = {
++             enable = true;
++             user = "<username>";
++             enableRosetta = false;
++             autoMigrate = true;
++           };
++         }
+        ];
+      };
     };
-  };
 }
 ```
 
 <!-- cspell:enable -->
 
+:::message
+`autoMigrate` を有効にしておくと、既存の Homebrew から自動移行されます。
+多くの方は Homebrew が入っていると思うので、有効にしておくとよいでしょう。
+
+`enableRosetta` は Apple シリコン搭載の Mac 限定の設定です。
+古い Intel Mac でしか動かないパッケージを利用する場合、有効にしてください。
+現在では、そのようなパッケージは少ないかと思うので、無効化した例を提示しています。
+:::
 
 
-また、nix-darwin ではキーマッピングを変更できます。
-詳細は以下の記事を参照ください。
+# 3. Homebrew パッケージを管理する
+nix-darwin には Homebrew 経由でパッケージをインストールする機能があります。
 
-https://zenn.dev/trifolium/articles/a6fc32a05be6d0
+:::message
+nix-darwin が Homebrew を動かしてパッケージをインストールします。
+内部では Homebrew の Bundle 機能を用いています。
 
-```nix:homebrew.nix
-{
-  pkgs,
-  ...
-}:
-{
-  # キーマッピング
-  system.keyboard = {
-    enableKeyMapping = true;
-    userKeyMapping =
-      let
-        mkKeyMapping =
-          let
-            hexToInt = s: pkgs.lib.trivial.fromHexString s;
-          in
-          src: dst: {
-            HIDKeyboardModifierMappingSrc = hexToInt src;
-            HIDKeyboardModifierMappingDst = hexToInt dst;
-          };
-        # Key-map References:
-        #   https://developer.apple.com/library/archive/technotes/tn2450/_index.html
-        # e.g.
-        #   07000 = Keyboard, 000E0 = Keyboard Left Control
-        #     -> 0x7000000E3 = Keyboard Left Command
-        # macOS Fn key:
-        #   https://apple.stackexchange.com/questions/340607/what-is-the-hex-id-for-fn-key%EF%BC%89
-        leftControl = "0x7000000E0";
-        leftCommand = "0x7000000E3";
-        capsLock = "0x700000039";
-        fnKey = "0xFF00000003";
-      in
-      [
-        # Left Control <-> GUI(Command)
-        (mkKeyMapping leftControl leftCommand)
-        (mkKeyMapping leftCommand leftControl)
-        # Caps Lock -> Fn
-        (mkKeyMapping capsLock fnKey)
-      ];
+**依存含めたパッケージのバージョン管理は Homebrew の機能に依存します**。
+あくまでパッケージを Nix っぽく宣言的に記述して管理ができる程度に捉えてください。
+:::
+
+:::details Homebrew パッケージの再現性を Nix で担保したい方
+[brew-nix](https://github.com/BatteredBunny/brew-nix) を利用すると、Nix の仕組みでバージョンを固定できます。
+ただし、ハッシュ値更新などが大変なので、強いこだわりがある場合のみお試しください。
+
+>私は使っていません。
+Homebrew で管理する（Nixpkgs にない）パッケージは大半が開発に利用しません。パッケージが揃えば十分と感じています。
+Nix による再現性の恩恵よりも、Nix に起因したエラー発生リスクの方が高いと判断しました。
+そもそも、brew-nix で管理したいパッケージならば、自分で Nixpkgs に登録・メンテした方が良いと思っています。
+
+:::
+
+
+`configuration.nix` に以下を追記します。
+
+<!-- cspell:disable -->
+
+```nix:~/work/dotfiles/configuration.nix
+  homebrew = {
+    enable = true;
+    user = "<username>";
+    brews = [
+      # brew install nginx
+      "nginx"
+      # brew install petere/postgresql/postgresql-common
+      "petere/postgresql/postgresql-common"
+    ];
+    casks = [
+      # brew install --cask microsoft-office
+      "microsoft-office"
+    ];
+    taps = [
+      # brew tap petere/postgresql
+      "petere/postgresql"
+      
+      # URL を指定する書き方も可能（架空の URL なのでコメントアウト）
+      # brew tap user/tap-repo https://user@bitbucket.org/user/homebrew-tap-repo.git
+      # {
+      #   name = "user/tap-repo";
+      #   clone_target = "https://user@bitbucket.org/user/homebrew-tap-repo.git";
+      # }
+    ];
   };
-}
 ```
+
+<!-- cspell:enable -->
+
+
+# 4. 反映する
+nix-darwin の環境を更新すると、Homebrew によるパッケージのインストール処理も実施されます。
+
+```bash:Bash
+sudo darwin-rebuild switch
+```
+
+
+# 5. 既存の Homebrew からパッケージを移行する
+Homebrew で手動インストールした CLI ツールは `--installed-on-request` で抽出できます。
+`brew list` だと依存関係で自動インストールされたツールも混ざるため、移行対象の整理には不向きです。
+
+GUI アプリは `brew list --cask` で一覧化できます。
+
+```bash:Bash
+brew list --installed-on-request
+```
+
+```bash:Bash
+brew list --cask
+```
+
+表示されたパッケージを `brews` / `casks` に追加し、`sudo darwin-rebuild switch` で反映します。
+
+
+# 6. その他の設定
+## 6.1 パッケージの更新設定
+Homebrew 管理下のパッケージの更新タイミングを設定できます。
+
+デフォルト設定だと、`brew upgrade` コマンドを手動実行した場合に更新されます。
+`sudo darwin-rebuild switch` した際、パッケージのインストールは行われますが、更新処理はされないので注意してください。
+
+:::message
+`sudo darwin-rebuild switch` 実行時、一時的に `HOMEBREW_NO_AUTO_UPDATE = 1` が設定された状態で、`brew bundle install --no-upgrade` が実行されます。
+:::
+
+なお、デフォルト設定では、手動で `brew` コマンド（`brew install`、`brew tap` 等）を実行した場合に自動更新が走ります。
+そのため、意図せず更新してしまう可能性があります。
+
+以下のように設定すると、Nix（`flake.nix`）に近い運用が可能になります。
+
+```nix:~/work/dotfiles/configuration.nix
+  homebrew = {
+    onActivation = {
+      upgrade = true;  // デフォルト false
+      autoUpdate = false;  // デフォルト false
+    };
+    global.autoUpdate = false;  // デフォルト true
+  };
+```
+
+この設定では、`HOMEBREW_NO_AUTO_UPDATE=1` が環境変数としてセットされるため、手動で `brew` コマンドを実行しても自動更新されません。
+
+明示的に `brew update` して formula（パッケージ定義）を更新した後、`sudo darwin-rebuild switch` することで、パッケージが最新バージョンに更新されます。
+
+:::message
+`nix flake update` して `flake.lock` を更新した後、環境を更新するとパッケージが更新される、という流れと似た運用になります。
+
+いつ更新するかが明確になり、かつ、コマンドの責務が分離できる（`brew update` がパッケージ定義の更新、`sudo darwin-rebuild switch` が定義に基づいたパッケージのインストール・更新）ので、個人的に好きな設定です。
+:::
+
+
+## 6.2 homebrew.onActivation.cleanup
+`uninstall` を指定すると、リストに記載していないパッケージは自動的にアンインストールされます。
+
+デフォルト設定（`none`）の場合、リストから除外してもアンインストールされません。
+
+:::message
+`sudo darwin-rebuild switch` した際、`brew bundle install --cleanup` コマンドが実行されます。
+
+**設定ファイル（`configuration.nix` 等）で宣言されていない（＝手動でインストールしたパッケージ）はアンインストールされるので、注意してください**。
+
+既存の Homebrew で入れたパッケージを nix-darwin 側に全て移してから、設定してください。
+:::
+
+```nix:~/work/dotfiles/configuration.nix
+  homebrew = {
+    onActivation.cleanup = "uninstall";
+  };
+```
+
+
+# 7. 最終的な設定例・運用例
+
+```nix:~/work/dotfiles/configuration.nix
+  homebrew = {
+    enable = true;
+    user = "<username>";
+
+    global.autoUpdate = false;
+    onActivation = {
+      autoUpdate = false;
+      upgrade = true;
+      # cleanup = "uninstall";  # Homebrew からの移行完了後に設定
+    };
+
+    brews = [
+      # brew install nginx
+      "nginx"
+    ];
+    casks = [
+      # brew install --cask microsoft-office
+      "microsoft-office"
+    ];
+  };
+```
+
+パッケージを追加・除外する場合は、brews と casks のリストを編集した後、nix-darwin の環境を更新します。
+
+```bash:Bash
+sudo darwin-rebuild switch
+```
+
+Homebrew 本体・パッケージを更新する場合、以下のコマンドを順に実行します。
+
+```bash:Bash
+brew update
+sudo darwin-rebuild switch
+```
+
+:::message
+上記操作は、home-manager 管理下のツールを更新する場合と似た流れです。
+
+```bash:Bash
+nix flake update
+sudo darwin-rebuild switch
+```
+
+更新操作が煩雑だと思った場合は、[go-task](https://github.com/go-task/task) 等のタスクランナーツールや `flake.nix` の `apps`（Nix Flakes のタスクランナー的な機能）を用いて、各種コマンドを一括実行するタスクを作ると楽です。
+:::
