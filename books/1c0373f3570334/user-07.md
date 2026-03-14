@@ -12,12 +12,13 @@ title: "Home Manager へ既存パッケージを移行する"
 Home Manager の設定は `~/work/dotfiles/home-manager` に集約します。
 
 ```:フォルダ構成
-~/work/dotfiles/home-manager/
-├── flake.lock
-├── flake.nix
-├── git
-│   └── .gitconfig
-└── home.nix
+~/work/dotfiles/
+├─ flake.lock
+├─ flake.nix
+└─ home-manager/
+    ├─ git
+    │   └─ .gitconfig
+    └─ home.nix
 ```
 
 
@@ -25,7 +26,7 @@ Home Manager の設定は `~/work/dotfiles/home-manager` に集約します。
 ## 3.1 home.nix に Git を追加
 `home.nix` に Git を追加します。
 
-```nix:~/.config/home-manager/home.nix
+```nix:home.nix
   home.packages = with pkgs; [
     git
   ];
@@ -34,12 +35,12 @@ Home Manager の設定は `~/work/dotfiles/home-manager` に集約します。
 反映します。
 
 ```bash:Bash
-home-manager switch
+home-manager switch --flake .
 ```
 
 
 :::message
-前章でも解説しましたが、Homebrew と競合しないので、まだ Homebrew の Git をアンインストールしなくても大丈夫です。
+Homebrew と競合しないので、まだ Homebrew の Git をアンインストールしなくても大丈夫です。
 
 移行が確認できてからアンインストールします。
 :::
@@ -59,13 +60,18 @@ home-manager switch
 :::message
 すでに `~/.gitconfig` があった場合、home-manager が配置しようとする `.gitconfig` と競合します。
 
+```bash:Bash
+$ home-manager switch --flake .
+Existing file '/home/ryu/.gitconfig' would be clobbered
+```
+
 以下のコマンドを利用すると、既存の `~/.gitconfig` を `<filename>.backup` に置き換えてくれます。
 
 ```bash:Bash
 home-manager switch -b backup
 ```
 
-もしくは、既存の `~/.gitignore` を削除（不安ならリネームでバックアップ）してください。
+もしくは、既存の `~/.gitignore` を手動で削除（不安ならリネームでバックアップ）してください。
 
 ```bash:Bash
 rm ~/.gitconfig
@@ -76,7 +82,7 @@ rm ~/.gitconfig
 Home Manager の設定を反映します。
 
 ```bash:Bash
-home-manager switch
+home-manager switch --flake .
 ```
 
 
@@ -94,6 +100,7 @@ which git
 ```
 
 >Homebrew の方が表示された場合、`which -a git` を試してみてください。
+`/Users/ryu/.nix-profile/bin/git` が含まれていれば Home Manager 管理下の Git は入っています。
 
 Homebrew 管理の Git を削除します。
 
@@ -103,20 +110,13 @@ brew uninstall git
 
 
 # 5. 以降は順次移行する
-この章では **Git** を移行しました。
+この章では Git を移行しました。
 同じ手順で、Homebrew で入れていたツールを **ひとつずつ移行**していきます。
 
-前章でも解説しましたが、移行の際は以下のサイトでツールが Nix で利用可能か検索してください。
+移行の際は以下のサイトでツールが Nix で利用可能か検索してください。
 
 https://search.nixos.org/packages
 
+パッケージの探し方や Nixpkgs に登録されていなかった場合の対処法はこちらをお読みください。
 
-# 6. Nixpkgs にないツールについて
-Mac 専用のツールや一部の GUI ベースのアプリは Nixpkgs に登録されていません。
-そういったツールは Homebrew 管理のままにしてください。
-
-:::message
-今の状態ですと、PC 買い替え時に `home-manager switch` だけではユーザー環境が再現できず、Homebrew でのインストール作業も必要となります。
-
-**第三部で解説する nix-darwin を用いると、Homebrew も Nix で一括管理でき、ワンコマンドで Home Manager・Homebrew 管理下のツールを構築可能になります**。
-:::
+https://zenn.dev/trifolium/books/1c0373f3570334/viewer/common-06
