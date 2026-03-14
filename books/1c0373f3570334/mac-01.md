@@ -37,8 +37,11 @@ system.defaults = {
 
 # 目次
 
-1. nix-darwin のインストール
-2. nix-darwin の基本的な使い方
-3. nix-darwin で Home Manager を管理する
-4. nix-darwin で Homebrew を管理する
-5. nix-darwin で Mac のシステム設定を管理する
+1. [nix-darwin のインストール](https://zenn.dev/trifolium/books/1c0373f3570334/viewer/mac-02)
+
+
+1. [nix-darwin のインストール](https://zenn.dev/trifolium/books/1c0373f3570334/viewer/mac-02)
+2. [nix-darwin の基本的な使い方](https://zenn.dev/trifolium/books/1c0373f3570334/viewer/mac-03)
+3. [nix-darwin で Mac のシステム設定を管理する](https://zenn.dev/trifolium/books/1c0373f3570334/viewer/mac-04)
+4. [nix-darwin で Home Manager を管理する](https://zenn.dev/trifolium/books/1c0373f3570334/viewer/mac-05)
+5. [nix-darwin で Homebrew を管理する](https://zenn.dev/trifolium/books/1c0373f3570334/viewer/mac-06)
