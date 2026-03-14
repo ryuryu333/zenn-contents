@@ -6,174 +6,161 @@ title: "Home Manager インストール後の初期設定"
 この章では Home Manager を本格的に利用する前にすべき設定を解説します。
 
 
-# 2. 設定ファイルの種類
-Home Manager では `home.nix` と `flake.nix` の 2 つのファイルを利用します。
+# 2. ロックファイル
+インストールの過程で、`flake.lock` が自動的に生成されたはずです。
 
-## 2.1 home.nix
-自動生成された `home.nix` にはコメントによる解説が書かれている状態だと思います。
-次章以降で解説する内容ですが、興味がある方は読んでみてください。
+**このロックファイルで Home Manager 本体のバージョンや今後追加するパッケージのバージョンが固定されます**。
 
-コメントを消すと以下のようになります。
+ユーザー環境の再現に必須なファイルなので、`git add` しておいてください。
 
-```nix:home.nix
-{ config, pkgs, ... }:
 
-{
-  home.username = "ryu";  # 環境依存、自動入力された値を使ってください
-  home.homeDirectory = "/home/ryu";  # 環境依存、自動入力された値を使ってください
-  home.stateVersion = "25.11";  # 環境依存、自動入力された値を使ってください
+# 3. シェルの設定
+利用しているシェルにて Home Manager が作成した環境変数を利用可能にするため、以下を `~/.profile`（Bash）や `~/.zprofile`（Zsh）等に追記してください[^1]。
 
-  home.packages = [
-  ];
+[^1]: 公式リファレンス > Installing Home Manager > Standalone installation > 4.: https://nix-community.github.io/home-manager/index.xhtml#sec-install-standalone
 
-  home.file = {
-  };
-
-  home.sessionVariables = {
-  };
-
-  programs.home-manager.enable = true;
-}
+```bash
+. "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
 ```
 
-殆ど何も定義していない状態です。
-**ここにユーザー環境へ入れたいパッケージなどを記述していきます**。
+
+# 4. 利用する Nixpkgs のブランチ変更
+インストール作業で自動生成された `flake.nix` の `inputs` では Nixpkgs の `nixos-unstable` ブランチが指定されています。
+
+NixOS を利用する場合は `nixos-*` ブランチを使うべきですが、**それ以外の OS ならば `nixpkgs-*` ブランチを使うべきです**。
 
 
+:::details 理由
+**Nixpkgs ではブランチによって CI/CD のテスト内容が異なります**。
+`nixos-*` ブランチは NixOS 用です。
 
-## 2.2 flake.nix
-`flake.nix` は Home Manager 本体やインストールするパッケージの定義を管理します。
+NixOS 以外であっても問題はほぼ無いと思いますが、わざわざ `nixos-*` を使う理由はありません。
 
-前章のインストール作業により、以下のようなファイルが生成されているかと思います。
+詳細はこちらで解説しています。
 
->"ryu" と "x86_64-linux" の部分はインストールした PC の環境によって異なります。
+https://zenn.dev/trifolium/books/1c0373f3570334/viewer/common-06
 
-```nix:flake.nix
-{
-  description = "Home Manager configuration of ryu";
+:::
 
+`flake.nix` を以下のように編集します。
+
+```diff nix:flake.nix
   inputs = {
-    # Specify the source of Home Manager and Nixpkgs.
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+-   nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
++   nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-
-  outputs =
-    { nixpkgs, home-manager, ... }:
-    let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-    in
-    {
-      homeConfigurations."ryu" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-
-        # Specify your home configuration modules here, for example,
-        # the path to your home.nix.
-        modules = [ ./home.nix ];
-
-        # Optionally use extraSpecialArgs
-        # to pass through arguments to home.nix
-      };
-    };
-}
 ```
 
-**重要な部分だけ解説していきます**。
+以下のコマンドで結果を反映させます。
 
-
-### 2.2.1 inputs
-以下の部分で利用する Home Manager のソースをどこから取得するかを定義しています。
-
-```nix:flake.nix
-  inputs = {
-    home-manager = {
-      url = "github:nix-community/home-manager";
-    };
-  };
+```bash:Bash
+home-manager switch --flake .
 ```
 
-このコードの場合、home-manager のレポジトリにある `flake.nix` が情報源として定義されます。
 
-https://github.com/nix-community/home-manager
+# 5. 設定ファイルの配置場所を変更
+**このセクションの内容は好みの問題だと思うので、任意です**。
 
-:::message
-例えば、`home-manager.lib` のように参照すると、`nix-community/home-manager/flake.nix` の `outputs` で定義されている `lib` を参照することになります。
-:::
+以下のように dotfiles における各種設定ファイルの責務を分離すると管理が楽だと思います。
 
+`flake.nix` には入力情報の定義と各ツール（Home Manager 含む）のオーケストレーションを担わせます。
+`home.nix` などの `*.nix` ファイルには具体的なユーザー環境に入れるパッケージのリストなどの情報を持たせます。
 
 ----
 
-以下では、どの Nixpkgs を参照するかを定義しています。
+Home Manager インストール直後では、以下のようなファイル構成だと思います。
 
-```nix:flake.nix
-  inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-  };
+```:構成
+dotfiles/
+├── flake.lock
+├── flake.nix
+└── home.nix
 ```
 
-ここでは、`nixos/nixpkgs` レポジトリの `nixos-unstable` ブランチが参照される設定になっています。
-**これにより、どの情報源からパッケージの情報（Git のビルドレシピなど）を得るかを定義しています**。
+今後、別のツールを導入する可能性を考慮すると、ツールごとにフォルダがあると便利です。
 
-Nixpkgs についてはこちらの章で解説しています。
+**また、`home.nix` が肥大化した際は `vim.nix` や `git.nix` のように関心ごとに設定ファイルを切り出していくことになります**。
+このままではプロジェクトルートにファイルが散乱するので、この観点でもフォルダ分けをした方が良いです。
 
-https://zenn.dev/trifolium/books/1c0373f3570334/viewer/common-06
-
-
-### 2.2.2 homeConfigurations
-`flake.nix` の下側にある `homeConfigurations` にて、どの設定ファイルを追加で読み込むかを定義しています。
-
-```nix:flake.nix
-  homeConfigurations."ryu" = home-manager.lib.homeManagerConfiguration {
-    modules = [ ./home.nix ];
-  };
+```:構成
+dotfiles/
+├─ flake.lock
+├─ flake.nix
+└─ home-manager/
+    └─ home.nix
 ```
 
-このコードでは、modules として `home.nix` を読み込むと定義されています。
-**この `home.nix` の内容がユーザー環境設定の本体と言えます**。
+:::details 具体的な活用例
+**`dotfiles/home-manager` にユーザー環境に関する設定を集約するイメージです**。
 
-:::message
-リスト形式ですので、modules に複数の設定ファイル（`*.nix`）を渡すことも可能です。
-パスは `flake.nix` からの相対パスを記述します。
+```:利用イメージ
+dotfiles/
+├─ ...
+└─ home-manager/
+    ├─ home.nix  # 内部で git.nix を参照
+    ├─ git.nix  # git の設定ファイルの配置などを定義
+    └─ git/
+        └─ .gitconfig  # git の設定ファイル（コピー元）  
+```
+
+----
+
+**また、PC ごとの設定を以下のように管理できたりします**。
+
+
+```:利用イメージ
+dotfiles/
+├─ ...
+└─ home-manager/
+    ├─ git/
+    ├─ bash/
+    ├─ zsh/
+    └─ home/
+        ├─ common.nix  # 共通の設定 Git を参照
+        ├─ wsl.nix  # WSL 専用の設定 Bash を参照
+        └─ mac.nix  # Mac 専用の設定 Zsh を参照
+```
+
+----
+
+Mac 限定ですが、Home Manager の他に nix-darwin というツールがよく利用されます（Mac のシステム設定を管理できるツールです）。
+
+**どちらのツールも `flake.nix` を起点とします**。
+そのため、以下のようなフォルダ分けにすると管理しやすいです。
+
+```:利用イメージ
+dotfiles/
+├─ flake.nix
+├─ home-manager/
+│  └─ home.nix
+└─ nix-darwin/
+    └─ configuration.nix
+```
+
+----
+
+より具体的な活用例が見たい場合はこちらの記事をご覧ください。
+
+https://zenn.dev/trifolium/articles/b3d88bbabcad2c
+
 :::
 
+**`home.nix` を移動させた場合、`flake.nix` の内容を書き換える必要があります**。
 
-# 3. 設定ファイル関連のファイル
-`dotfiles` レポジトリに `home.nix` と `flake.nix` の他に `flake.lock` があるかと思います。
-
-これは `flake.nix` を利用した Nix の処理の過程で生成されるファイルです。
-**`inputs` に定義した情報をベースにして、参照先を固定するのに利用されます**。
-
-**このロックファイルにより、Home Manager 本体や導入するパッケージのバージョンが固定されます**。
-
-:::details 具体例
-`inputs` ではどのレポジトリを参照するかが記述しています。
-
-```nix:flake.nix
-  inputs = {
-    home-manager = {
-      url = "github:nix-community/home-manager";
+```diff nix:flake.nix
+    homeConfigurations."ryu" = home-manager.lib.homeManagerConfiguration {
+      inherit pkgs;
+-     modules = [ ./home.nix ];
++     modules = [ ./home-manager/home.nix ];
     };
-  };
 ```
 
-一方で、`flake.lock` ではどのリビジョン（コミットタイミング）を参照するのか、参照先の情報から計算したハッシュ値、などが記録されます。
+以下のコマンドで結果を反映させます。
 
-**これにより、別の PC でも同じソースコードを参照できるようにしています**。
-
-```nix:flake.lock
-"home-manager": {
-  "locked": {
-    "lastModified": 1773422513,
-    "narHash": "sha256-MPjR48roW7CUMU6lu0+qQGqj92Kuh3paIulMWFZy+NQ=",
-    "owner": "nix-community",
-    "repo": "home-manager",
-    "rev": "ef12a9a2b0f77c8fa3dda1e7e494fca668909056",
-    "type": "github"
-  },
+```bash:Bash
+home-manager switch --flake .
 ```
-
-:::

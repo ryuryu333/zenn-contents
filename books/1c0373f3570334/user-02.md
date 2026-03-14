@@ -139,29 +139,8 @@ Homebrew 管理下のパッケージは問題なく利用できます。
 :::
 
 
-# 6. インストール後の操作
-## 6.1 ロックファイル
-インストールの過程で、`flake.lock` が自動的に生成されたはずです。
-
-**このロックファイルで Home Manager 本体のバージョンや今後追加するパッケージのバージョンが固定されます**。
-
-ユーザー環境の再現に必須なファイルなので、`git add` しておいてください。
-
-
-## 6.2 シェルの設定
-利用しているシェルにて Home Manager が作成した環境変数を利用可能にするため、以下を `~/.profile`（Bash）や `~/.zprofile`（Zsh）等に追記してください[^1]。
-
-[^1]: 公式リファレンス > Installing Home Manager > Standalone installation > 4.: https://nix-community.github.io/home-manager/index.xhtml#sec-install-standalone
-
-```bash
-. "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
-```
-
-これで作業は完了です。
-
-
-# 7. 補足
-## 7.1 参考資料
+# 6. 補足
+## 6.1 参考資料
 
 - Home Manager GitHub ページ
 
@@ -172,7 +151,7 @@ https://github.com/nix-community/home-manager
 https://nix-community.github.io/home-manager/index.xhtml
 
 
-## 7.2 インストール方法の種類
+## 6.2 インストール方法の種類
 Home Manager の導入方法は大きく分けて **Standalone** と **モジュール**の 2 パターンあります。
 
 | 方法 | 概要 |
@@ -191,7 +170,7 @@ Home Manager の導入方法は大きく分けて **Standalone** と **モジュ
 :::
 
 
-## 7.3 バージョン管理方法の種類
+## 6.3 バージョン管理方法の種類
 Home Manager 本体、および、導入するパッケージのバージョン管理方法は **nix-channel / Flake** の 2 パターンあります。
 
 nix-channel が標準的な方法とされていますが、バージョン情報を Git 管理に反映させるのが手間です。
