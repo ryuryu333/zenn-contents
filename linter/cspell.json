@@ -59,6 +59,7 @@
         "oxalica",
         "passthru",
         "pkgs",
+        "pname",
         "purpleclay",
         "pyproject",
         "pytest",
