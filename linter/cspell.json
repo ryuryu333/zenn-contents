@@ -58,6 +58,7 @@
         "otool",
         "oxalica",
         "passthru",
+        "petere",
         "pkgs",
         "pname",
         "purpleclay",
@@ -79,6 +80,7 @@
         "Xferd",
         "Zenn",
         "zenncli",
-        "zennfes"
+        "zennfes",
+        "zhaofengli"
     ]
 }
