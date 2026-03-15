@@ -28,7 +28,6 @@ nix-darwin の基本的な設定を記述していきます。
 
 ```nix:configuration.nix
 {
-  pkgs,
   self,
   ...
 }:
@@ -102,7 +101,6 @@ system.defaults.CustomUserPreferences = {
 
 ```nix:configuration.nix
 {
-  pkgs,
   ...
 }:
 {
@@ -174,7 +172,7 @@ https://zenn.dev/trifolium/articles/a6fc32a05be6d0
 
 ```nix:configuration.nix
 {
-  pkgs,
+  lib,
   ...
 }:
 {
@@ -185,7 +183,7 @@ https://zenn.dev/trifolium/articles/a6fc32a05be6d0
       let
         mkKeyMapping =
           let
-            hexToInt = s: pkgs.lib.trivial.fromHexString s;
+            hexToInt = lib.trivial.fromHexString;
           in
           src: dst: {
             HIDKeyboardModifierMappingSrc = hexToInt src;

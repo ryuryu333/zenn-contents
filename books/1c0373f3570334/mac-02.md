@@ -50,7 +50,6 @@ title: "nix-darwin のインストール"
 
 ```nix:configuration.nix
 {
-  pkgs,
   ...
 }:
 {
