@@ -1,450 +1,144 @@
 ---
-title: "テンプレートの活用"
+title: "devShell 以外の方法での開発環境管理"
 ---
 
 # 1. この章でやること
-この章では `flake.nix` のテンプレートを準備、活用する方法を解説します。
+この章では `flake.nix` で devShell を直接記述する以外の方法を紹介します。
 
 
 :::message
-`flake.nix` に記述する内容の多くは使いまわせます。
-そのため、テンプレートを用意しておくと `package = []` の中身を書き換えるだけで環境構築が素早く終わります。
-:::
+筆者は `flake.nix` を直接書いた方が楽だと思っています。
+一方、人によっては Nix をラップして JSON などで設定を記述できた方が楽と感じるかもしれません。
 
+本章は「こんなツールもあるんだ」という視点でお読みください、詳細な使用方法までは解説しません。
 
-# 2. 標準のテンプレートを利用する
-特別な準備をせずとも Nix では `flake.nix` のテンプレートを利用できます。
+----
 
-```zsh:Zsh
-nix flake init
-```
+ちなみに、筆者はどのツールも触ったことがあります。
+しかし、ツールの独自ルールを覚えるのが難しい（自分好みにカスタマイズするのが大変）と感じ、結局 `flake.nix` を雑に書いた方が楽、という状態になっています...。
 
-```nix:生成される flake.nix
-{
-  description = "A very basic flake";
+どれも良いツールなのですが、`flake.nix` の方が実装（ソースコード）を調査する難易度が低いのです。
+高度にラップされたツール独自関数を駆使するよりも、Nix 言語で関数を自作したリ、Nixpkgs のライブラリを直接使う方が思い通りの挙動をそのまま記述できるので楽だと感じています。
 
-  inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
-  };
+もしかしたら、Nix でパッケージ管理以外（環境変数管理、サービスの管理（PostgreSQL の起動など）、タスクランナー、リンター・フォーマッター、テスト、ビルド）を行いたい場合は、`flake.nix` よりも各種ツールの方が楽になるのかもしれません。
 
-  outputs = { self, nixpkgs }: {
-
-    packages.x86_64-linux.hello = nixpkgs.legacyPackages.x86_64-linux.hello;
-
-    packages.x86_64-linux.default = self.packages.x86_64-linux.hello;
-
-  };
-}
-```
-
-特定の言語に特化したテンプレートも用意されています。
-
-```zsh:Zsh
-nix flake init -t templates#python
-```
-
-```nix:生成される flake.nix
-{
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-  inputs.poetry2nix.url = "github:nix-community/poetry2nix";
-
-  outputs = { self, nixpkgs, poetry2nix }:
-    let
-      supportedSystems = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
-      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
-      pkgs = forAllSystems (system: nixpkgs.legacyPackages.${system});
-    in
-    {
-      packages = forAllSystems (system: let
-        inherit (poetry2nix.lib.mkPoetry2Nix { pkgs = pkgs.${system}; }) mkPoetryApplication;
-      in {
-        default = mkPoetryApplication { projectDir = self; };
-      });
-
-      devShells = forAllSystems (system: let
-        inherit (poetry2nix.lib.mkPoetry2Nix { pkgs = pkgs.${system}; }) mkPoetryEnv;
-      in {
-        default = pkgs.${system}.mkShellNoCC {
-          packages = with pkgs.${system}; [
-            (mkPoetryEnv { projectDir = self; })
-            poetry
-          ];
-        };
-      });
-    };
-}
-```
-
-:::message
-テンプレートによっては `flake.nix` 以外のファイルも生成されます。
-
-上記 Python テンプレートの場合、Poetry 関連のファイルも生成されます。
-
-```zsh:Zsh
-> tree
-.
-├── flake.nix
-├── poetry.lock
-├── pyproject.toml
-├── README.md
-└── sample_package
-    ├── __init__.py
-    └── __main__.py
-```
+>筆者は緩く Nix を使っているので、パッケージ管理以外はその他のツール（タスクなら go-task など）に責務を分散させがちです。
 
 :::
 
-テンプレートは [NixOS/templates](https://github.com/NixOS/templates) に定義されています。
-以下のコマンドで一覧を確認できます。
+
+# 2. Devbox
+[Devbox](https://github.com/jetify-com/devbox) は JSON で開発環境の設定を記述します。
+内部では Nix を用いていますが、ユーザーが Nix 言語を記述しなくてもよいのが利点と言えるでしょう。
+
+[mise](https://mise.jdx.dev/) などに近い使用感かと思います。
 
 ```zsh:Zsh
-nix flake show templates
+devbox init
+devbox add python@3.12
+devbox shell
+```
+
+```json:devbox.json
+{
+  "$schema":  "https://raw.githubusercontent.com/jetify-com/devbox/0.16.0/.schema/devbox.schema.json",
+  "packages": ["python@3.12"],
+  "shell": {
+    "init_hook": [
+      "echo 'Welcome to devbox!' > /dev/null"
+    ],
+    "scripts": {
+      "test": [
+        "echo \"Error: no test specified\" && exit 1"
+      ]
+    }
+  }
+}
 ```
 
 
-# 3. 他者が公開しているテンプレートを利用する
-`nix flake init` コマンドでは GitHub レポジトリを指定して、外部のテンプレートを読み込む機能があります。
+# 3 devenv
+[devenv](https://github.com/cachix/devenv) は Nix 言語で開発環境の設定を記述します。
 
-[the-nix-way/dev-templates](https://github.com/the-nix-way/dev-templates) から Python テンプレートを以下のように利用できます。
+`flake.nix` を直接書くよりも、シンプルで読みやすい書き方になっています。
 
-```zsh:Zsh
-nix flake init -t "https://flakehub.com/f/the-nix-way/dev-templates/*#python"
-```
+また、特定パッケージのバージョン指定やサービスの管理などを数行で記述できるのが便利です。
+`flake.nix` でこれらを記述するのは大変面倒であり、Nix 言語の知識も要求されるのでハードルが高くなりがちです。
+
+筆者の環境で動作確認できていませんが、以下のように記述できます。
 
 <!-- cspell:disable -->
 
-```nix:生成される flake.nix
+```nix:devenv.nix
+{ pkgs, lib, config, inputs, ... }:
+
 {
-  description = "A Nix-flake-based Python development environment";
-
-  inputs.nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1"; # unstable Nixpkgs
-
-  outputs =
-    { self, ... }@inputs:
-
-    let
-      supportedSystems = [
-        "x86_64-linux"
-        "aarch64-linux"
-        "x86_64-darwin"
-        "aarch64-darwin"
-      ];
-      forEachSupportedSystem =
-        f:
-        inputs.nixpkgs.lib.genAttrs supportedSystems (
-          system:
-          f {
-            pkgs = import inputs.nixpkgs { inherit system; };
-          }
-        );
-
-      /*
-        Change this value ({major}.{min}) to
-        update the Python virtual-environment
-        version. When you do this, make sure
-        to delete the `.venv` directory to
-        have the hook rebuild it for the new
-        version, since it won't overwrite an
-        existing one. After this, reload the
-        development shell to rebuild it.
-        You'll see a warning asking you to
-        do this when version mismatches are
-        present. For safety, removal should
-        be a manual step, even if trivial.
-      */
-      version = "3.13";
-    in
-    {
-      devShells = forEachSupportedSystem (
-        { pkgs }:
-        let
-          concatMajorMinor =
-            v:
-            pkgs.lib.pipe v [
-              pkgs.lib.versions.splitVersion
-              (pkgs.lib.sublist 0 2)
-              pkgs.lib.concatStrings
-            ];
-
-          python = pkgs."python${concatMajorMinor version}";
-        in
-        {
-          default = pkgs.mkShellNoCC {
-            venvDir = ".venv";
-
-            postShellHook = ''
-              venvVersionWarn() {
-                local venvVersion
-                venvVersion="$("$venvDir/bin/python" -c 'import platform; print(platform.python_version())')"
-
-                [[ "$venvVersion" == "${python.version}" ]] && return
-
-                cat <<EOF
-              Warning: Python version mismatch: [$venvVersion (venv)] != [${python.version}]
-                       Delete '$venvDir' and reload to rebuild for version ${python.version}
-              EOF
-              }
-
-              venvVersionWarn
-            '';
-
-            packages = with python.pkgs; [
-              venvShellHook
-              pip
-
-              # Add whatever else you'd like here.
-              # pkgs.basedpyright
-
-              # pkgs.black
-              # or
-              # python.pkgs.black
-
-              # pkgs.ruff
-              # or
-              # python.pkgs.ruff
-            ];
-          };
-        }
-      );
+  languages = {
+    python = {
+      enable = true;
+      version = "3.11.2";
+      uv.enable = true;
     };
+  };
+
+  packages = with pkgs; [ git ];
+
+  enterShell = ''
+    #python --version
+  '';
+
+  services.postgres = {
+    enable = true;
+    package = pkgs.postgresql_15;
+    initialDatabases = [{ name = "mydb"; }];
+    extensions = extensions: [
+      extensions.postgis
+      extensions.timescaledb
+    ];
+    settings.shared_preload_libraries = "timescaledb";
+    initialScript = "CREATE EXTENSION IF NOT EXISTS timescaledb;";
+  };
 }
 ```
 
 <!-- cspell:enable -->
 
-```:その他の生成されたファイル
-.
-├── .envrc
-├── .gitignore
-└── flake.nix
+
+# 3 LazyNix
+[LazyNix](https://github.com/shunsock/lazynix) は YAML で開発環境の設定を記述します。
+先ほどの Devbox や devenv と比べると、機能はシンプルよりで `flake.nix` のラッパーといった立ち位置です。
+
+独自の設定ファイル（`lazynix.yaml`）から `flake.nix` を自動生成し、devShell 環境を起動します。
+
+そのため、最初は LazyNix でシンプルさを享受しつつ、LazyNix で実現が難しいカスタマイズをしたくなったら `flake.nix` を直接利用するスタイルに移行、といったことが可能かと思います。
+
+<!-- cspell:disable -->
+
+```yaml:lazynix.yaml
+devShell:
+  allowUnfree: false
+
+  package:
+    stable:
+      - python312
+      - uv
+    unstable: []
+
+  shellHook:
+    - "echo Python $(python --version) ready!"
+    - "echo uv $(uv --version) ready!"
+
+  env:
+    # Load from .env files
+    dotenv:
+      - .env
+
+    # Define variables directly
+    envvar:
+      - name: PYTHONPATH
+        value: ./src
+      - name: DEBUG
+        value: "true"
 ```
 
-
-# 4. テンプレートを自作する
-ローカルに以下のようなフォルダを作成します。
-
-```:フォルダ構成
-~/work/nix_template/
-├── basic
-│   ├── .envrc
-│   └── flake.nix
-└── flake.nix
-```
-
-プロジェクトルートの `flake.nix` にて「テンプレートの名前・コピー元」といった情報を定義します。
-
-テンプレート保存先（`./basic/`）にあるファイルが `nix flake init -t ...` コマンドでコピーされます。
-
-以下は設定例です。
-
-```nix:~/work/nix_template/flake.nix
-{
-  description = "Nix template";
-  outputs =
-    { self }:
-    {
-      templates.basic = {
-        path = ./basic;
-        description = "Basic project";
-      };
-      templates.default = self.templates.basic;
-    };
-}
-```
-
-```nix:~/work/nix_template/basic/flake.nix
-{
-  description = "Basic template";
-
-  inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
-  };
-
-  outputs =
-    {
-      self,
-      nixpkgs,
-      flake-utils,
-    }:
-    let
-      supportSystems = with flake-utils.lib.system; [
-        x86_64-linux
-        aarch64-darwin
-      ];
-    in
-    flake-utils.lib.eachSystem supportSystems (
-      system:
-      let
-        pkgs = import nixpkgs {
-          inherit system;
-          config.allowUnfreePredicate =
-            pkg:
-            builtins.elem (pkgs.lib.getName pkg) [
-            ];
-        };
-      in
-      {
-        devShells.default = pkgs.mkShell {
-          packages = with pkgs; [
-          ];
-        };
-      }
-    );
-}
-```
-
-```:~/work/nix_template/basic/.envrc
-use flake
-```
-
-# 5. 自作テンプレートを利用する
-以下のようにローカルの絶対パスを指定すると、自作テンプレートを利用できます。
-
-```zsh:Zsh
-nix flake init -t /Users/ryu/work/nix_template
-```
-
-```zsh:Zsh
-nix flake init -t /Users/ryu/work/nix_template#basic
-```
-
-GitHub の Public レポジトリとして自作テンプレートを管理すれば、以下のように呼び出すこともできます。
-
-```zsh:Zsh
-nix flake init -t "github:ryuryu333/nix_template"
-```
-
-https://github.com/ryuryu333/nix_template
-
-
-# 6. 自作テンプレートの呼び出しを簡易化する
-普段使いする場合、以下のような長いコマンドは使い勝手が悪いです。
-
-```zsh:Zsh
-nix flake init -t "github:ryuryu333/nix_template"
-```
-
-そこで、Nix の設定を変更して `nix flake init` だけで自作テンプレートを利用できるようにします。
-
-
-:::message
-**注意**。
-本セクションでは標準のテンプレート（`template`）を置き換えます。
-標準のテンプレートを呼び出すが面倒になります。
-:::
-
-
-#### Home Manager を利用する場合（推奨）
-
-```nix:home.nix
-  nix.registry = {
-    templates = {
-      from = { type = "indirect"; id = "templates"; };
-      to = { type = "github"; owner = "ryuryu333"; repo = "nix_template"; };
-    };
-  };
-```
-
-#### コマンド実行で設定する場合
-
-```zsh:Zsh
-nix registry add templates github:ryuryu333/nix_template
-```
-
-設定を元に戻したい場合は `remove` してください。
-
-```zsh:Zsh
-nix registry remove templates
-```
-
-----
-
-以下のコマンドで自作テンプレートを利用できるようになったはずです。
-
-```zsh:Zsh
-nix flake init
-```
-
-
-::::::details レジストリについて
-Nix コマンドを実行する際、GitHub リポジトリを参照する場合はレポジトリ名などを入力する必要があります。
-
-```zsh:Zsh
-> nix run github:NixOS/nixpkgs/nixpkgs-unstable#hello
-Hello, world!
-```
-
-しかし、毎回 `github:NixOS/nixpkgs/nixpkgs-unstable` と打ち込むのは大変です。
-[Nix のレジストリ機能](https://nix.dev/manual/nix/2.18/command-ref/new-cli/nix3-registry)を利用すると、`nixpkgs` のように任意の名前を付けることができます。
-
-
-:::message
-デフォルトで多くのレポジトリが登録されており、`nixpkgs` も登録済みです。
-
-```zsh:Zsh
-> nix registry list | grep nixpkgs
-global flake:nixpkgs github:NixOS/nixpkgs/nixpkgs-unstable
-```
-
-:::
-
-レジストリにより、短い記述で Nix コマンドが利用できます。
-
-```zsh:Zsh
-> nix run github:NixOS/nixpkgs/nixpkgs-unstable#hello
-Hello, world!
-
-> nix run nixpkgs#hello
-Hello, world!
-
-> nix run nixpkgs#hello --no-use-registries
-error: 'flake:nixpkgs' is an indirect flake reference, but registry lookups are not allowed
-```
-
-----
-
-`nix flake init` で参照されるテンプレートも `templates` としてレジストリに登録されています。
-
-```zsh:Zsh
-> nix registry list | grep templates
-global flake:templates github:NixOS/templates
-```
-
-先ほどの設定では、`templates` として自作テンプレートを置いているレポジトリを指定しました。
-
-```zsh:Zsh
-> nix registry list | grep templates
-user   flake:templates github:ryuryu333/nix_template
-global flake:templates github:NixOS/templates
-```
-
-:::message
-レジストリ設定は `/etc/nix/registry.json` と `~/.config/nix/registry.json` に保存されています。
-
-自作 `templates` はユーザー環境の設定に登録しました。
-
-```zsh:Zsh
-> cat ~/.config/nix/registry.json
-{
-  "flakes": [
-    {
-      "exact": true,
-      "from": {
-        "id": "templates",
-        "type": "indirect"
-      },
-      "to": {
-        "owner": "ryuryu333",
-        "repo": "nix_template",
-        "type": "github"
-      }
-    }
-  ],
-  "version": 2
-}
-```
-
-:::
-
-::::::
+<!-- cspell:enable -->
