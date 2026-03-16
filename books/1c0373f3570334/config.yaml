@@ -1,0 +1,43 @@
+title: "ちいさく始める Nix パッケージ管理"
+summary: |
+  Nix に興味があるけど、何から始めたらいいかわからない人のための入門書です。
+  Homebrew など従来のパッケージ管理の状態から少しずつ Nix 管理に置き換えていく方法を解説します。
+  Nix を活用するのに必要な知識を体系的にまとめるのを目的としています。
+topics: [nix, nixflakes, homemanager, dotfiles]
+published: true
+price: 0
+chapters:
+  - entrypoint-01
+  - common-01
+  - common-02
+  - common-03
+  - common-04
+  - common-05
+  - common-06
+  - user-01
+  - user-02
+  - user-03
+  - user-04
+  - user-05
+  - user-06
+  - user-07
+  - user-08
+  - mac-01
+  - mac-02
+  - mac-03
+  - mac-04
+  - mac-05
+  - mac-06
+  - dev-01
+  - dev-02
+  - dev-03
+  - dev-04
+  - dev-05
+  - dev-06
+  - dev-07
+  - dev-08
+  - tips-01
+  - tips-02
+  - tips-03
+  - tips-04
+  - tips-05
