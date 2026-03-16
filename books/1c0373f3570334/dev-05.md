@@ -10,15 +10,17 @@ title: "devShell 以外の方法での開発環境管理"
 筆者は `flake.nix` を直接書いた方が楽だと思っています。
 一方、人によっては Nix をラップして JSON などで設定を記述できた方が楽と感じるかもしれません。
 
-本章は「こんなツールもあるんだ」という視点でお読みください、詳細な使用方法までは解説しません。
+**本章は「こんなツールもあるんだ」という視点でお読みください、詳細な使用方法までは解説しません**。
 
 ----
 
 ちなみに、筆者はどのツールも触ったことがあります。
-しかし、ツールの独自ルールを覚えるのが難しい（自分好みにカスタマイズするのが大変）と感じ、結局 `flake.nix` を雑に書いた方が楽、という状態になっています...。
+**しかし、ツールの独自ルールを覚えるのが難しい（自分好みにカスタマイズするのが大変）と感じ、結局 `flake.nix` を雑に書いた方が楽、という状態になっています...**。
 
-どれも良いツールなのですが、`flake.nix` の方が実装（ソースコード）を調査する難易度が低いのです。
+**どれも良いツールなのですが、`flake.nix` の方が実装（ソースコード）を調査する難易度が低いのです**。
 高度にラップされたツール独自関数を駆使するよりも、Nix 言語で関数を自作したリ、Nixpkgs のライブラリを直接使う方が思い通りの挙動をそのまま記述できるので楽だと感じています。
+
+----
 
 もしかしたら、Nix でパッケージ管理以外（環境変数管理、サービスの管理（PostgreSQL の起動など）、タスクランナー、リンター・フォーマッター、テスト、ビルド）を行いたい場合は、`flake.nix` よりも各種ツールの方が楽になるのかもしれません。
 
@@ -26,10 +28,56 @@ title: "devShell 以外の方法での開発環境管理"
 
 :::
 
+シンプルなツールから順に紹介します。
 
-# 2. Devbox
+
+# 2. LazyNix
+[LazyNix](https://github.com/shunsock/lazynix) は YAML で開発環境の設定を記述します。
+**機能はシンプルよりで `flake.nix` のラッパーといった立ち位置です**。
+
+独自の設定ファイル（`lazynix.yaml`）から `flake.nix` を自動生成し、devShell 環境を起動します。
+
+
+:::message
+**最初は LazyNix でシンプルに運用して、LazyNix で実現が難しいカスタマイズをしたくなったら `flake.nix` を直接利用するスタイルに移行、といったことが可能かと思います**。
+:::
+
+
+<!-- cspell:disable -->
+
+```yaml:lazynix.yaml
+devShell:
+  allowUnfree: false
+
+  package:
+    stable:
+      - python312
+      - uv
+    unstable: []
+
+  shellHook:
+    - "echo Python $(python --version) ready!"
+    - "echo uv $(uv --version) ready!"
+
+  env:
+    # Load from .env files
+    dotenv:
+      - .env
+
+    # Define variables directly
+    envvar:
+      - name: PYTHONPATH
+        value: ./src
+      - name: DEBUG
+        value: "true"
+```
+
+<!-- cspell:enable -->
+
+
+# 3. Devbox
 [Devbox](https://github.com/jetify-com/devbox) は JSON で開発環境の設定を記述します。
-内部では Nix を用いていますが、ユーザーが Nix 言語を記述しなくてもよいのが利点と言えるでしょう。
+**内部では Nix を用いていますが、ユーザーが Nix 言語を記述しなくてもよいのが利点と言えるでしょう**。
 
 [mise](https://mise.jdx.dev/) などに近い使用感かと思います。
 
@@ -57,12 +105,11 @@ devbox shell
 ```
 
 
-# 3 devenv
+# 4. devenv
 [devenv](https://github.com/cachix/devenv) は Nix 言語で開発環境の設定を記述します。
+**`flake.nix` を直接書くよりも、シンプルで読みやすい書き方になっています**。
 
-`flake.nix` を直接書くよりも、シンプルで読みやすい書き方になっています。
-
-また、特定パッケージのバージョン指定やサービスの管理などを数行で記述できるのが便利です。
+**また、特定パッケージのバージョン指定やサービスの管理などを数行で記述できるのが便利です**。
 `flake.nix` でこれらを記述するのは大変面倒であり、Nix 言語の知識も要求されるのでハードルが高くなりがちです。
 
 筆者の環境で動作確認できていませんが、以下のように記述できます。
@@ -104,41 +151,17 @@ devbox shell
 <!-- cspell:enable -->
 
 
-# 3 LazyNix
-[LazyNix](https://github.com/shunsock/lazynix) は YAML で開発環境の設定を記述します。
-先ほどの Devbox や devenv と比べると、機能はシンプルよりで `flake.nix` のラッパーといった立ち位置です。
-
-独自の設定ファイル（`lazynix.yaml`）から `flake.nix` を自動生成し、devShell 環境を起動します。
-
-そのため、最初は LazyNix でシンプルさを享受しつつ、LazyNix で実現が難しいカスタマイズをしたくなったら `flake.nix` を直接利用するスタイルに移行、といったことが可能かと思います。
+# 5. その他
+LLM で検索させると、以下のように様々なツールが見つかるかと思います。
+私は使ったことが無いツールですので、名前をあげるだけにしておきます。
 
 <!-- cspell:disable -->
 
-```yaml:lazynix.yaml
-devShell:
-  allowUnfree: false
-
-  package:
-    stable:
-      - python312
-      - uv
-    unstable: []
-
-  shellHook:
-    - "echo Python $(python --version) ready!"
-    - "echo uv $(uv --version) ready!"
-
-  env:
-    # Load from .env files
-    dotenv:
-      - .env
-
-    # Define variables directly
-    envvar:
-      - name: PYTHONPATH
-        value: ./src
-      - name: DEBUG
-        value: "true"
-```
+- [Flox](https://github.com/flox/flox)
+- [devshell](https://github.com/numtide/devshell)
 
 <!-- cspell:enable -->
+
+:::message
+**Nix 言語に慣れて `flake.nix` で思い通りに環境を作り上げるもよし、自分に合う Nix ラッパーを探すもよしだと思います**。
+:::
