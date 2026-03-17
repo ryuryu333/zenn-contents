@@ -1,5 +1,5 @@
 ---
-title: "既存ツールとの競合と共存（Homebrew / mise など）"
+title: "1.3 既存ツールとの競合と共存（Homebrew / mise など）"
 ---
 
 # 1. この章でやること

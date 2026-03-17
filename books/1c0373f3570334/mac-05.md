@@ -1,5 +1,5 @@
 ---
-title: "nix-darwin で Home Manager を管理する"
+title: "3.4 nix-darwin で Home Manager を管理する"
 ---
 
 # 1. この章でやること

@@ -1,5 +1,5 @@
 ---
-title: "nix-darwin で Mac のシステム設定を管理する"
+title: "3.3 nix-darwin で Mac のシステム設定を管理する"
 ---
 
 # 1. この章でやること

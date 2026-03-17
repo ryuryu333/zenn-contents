@@ -1,5 +1,5 @@
 ---
-title: "Home Manager の基本的な使い方"
+title: "2.4 Home Manager の基本的な使い方"
 ---
 
 # 1. この章でやること

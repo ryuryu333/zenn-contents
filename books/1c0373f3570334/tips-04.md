@@ -1,5 +1,5 @@
 ---
-title: "overrideAttrs などでバージョンを変更する方法"
+title: "5.3 overrideAttrs などでバージョンを変更する方法"
 ---
 
 # 1. この章でやること

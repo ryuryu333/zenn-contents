@@ -1,5 +1,5 @@
 ---
-title: "Home Manager の設定ファイルの種類"
+title: "2.2 Home Manager の設定ファイルの種類"
 ---
 
 # 1. この章でやること

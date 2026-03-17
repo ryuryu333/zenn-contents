@@ -1,5 +1,5 @@
 ---
-title: "devShell を自動起動する - nix-direnv"
+title: "4.2 devShell を自動起動する - nix-direnv"
 ---
 
 # 1. この章でやること

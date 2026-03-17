@@ -1,5 +1,5 @@
 ---
-title: "Home Manager のインストール"
+title: "2.1 Home Manager のインストール"
 ---
 
 # 1. この章でやること

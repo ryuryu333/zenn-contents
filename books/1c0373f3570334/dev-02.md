@@ -1,5 +1,5 @@
 ---
-title: "Flakes devShell の基本な使い方"
+title: "4.1 Flakes devShell の基本な使い方"
 ---
 
 # 1. この章でやること

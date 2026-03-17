@@ -1,5 +1,5 @@
 ---
-title: "Home Manager と Homebrew の共存"
+title: "2.7 Home Manager と Homebrew の共存"
 ---
 
 # 1. この章でやること

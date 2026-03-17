@@ -1,5 +1,5 @@
 ---
-title: "Home Manager へ既存パッケージを移行する"
+title: "2.6 Home Manager へ既存パッケージを移行する"
 ---
 
 # 1. この章でやること

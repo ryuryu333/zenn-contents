@@ -1,5 +1,5 @@
 ---
-title: "unfree license エラーへの対処法"
+title: "5.1 unfree license エラーへの対処法"
 ---
 
 # 1. この章でやること

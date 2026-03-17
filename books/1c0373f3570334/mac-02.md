@@ -1,5 +1,5 @@
 ---
-title: "nix-darwin のインストール"
+title: "3.1 nix-darwin のインストール"
 ---
 
 # 1. この章でやること

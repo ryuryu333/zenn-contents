@@ -1,5 +1,5 @@
 ---
-title: "flake.nix と devShell の書き方"
+title: "4.3 flake.nix と devShell の書き方"
 ---
 
 # 1. この章でやること

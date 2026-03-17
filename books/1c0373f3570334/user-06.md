@@ -1,5 +1,5 @@
 ---
-title: "Home Manager の実践テクニック"
+title: "2.5 Home Manager の実践テクニック"
 ---
 
 # 1. この章でやること

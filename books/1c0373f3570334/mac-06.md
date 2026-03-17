@@ -1,5 +1,5 @@
 ---
-title: "nix-darwin で Homebrew を管理する"
+title: "3.5 nix-darwin で Homebrew を管理する"
 ---
 
 # 1. この章でやること

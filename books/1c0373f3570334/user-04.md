@@ -1,5 +1,5 @@
 ---
-title: "Home Manager インストール後の初期設定"
+title: "2.3 Home Manager インストール後の初期設定"
 ---
 
 # 1. この章でやること

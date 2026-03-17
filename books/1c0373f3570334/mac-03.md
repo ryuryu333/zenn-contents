@@ -1,5 +1,5 @@
 ---
-title: "nix-darwin の基本的な使い方"
+title: "3.2 nix-darwin の基本的な使い方"
 ---
 
 # 1. この章でやること
