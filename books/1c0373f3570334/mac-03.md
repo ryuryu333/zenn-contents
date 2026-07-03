@@ -43,7 +43,7 @@ nix-darwin を用いて、この設定をテキストで宣言的に記述・管
     nixpkgs.hostPlatform = "aarch64-darwin";
     system.stateVersion = 6;
     nix.enable = false;
-+   security.pam.services.sudo_local.touchIdAuth = true
++   security.pam.services.sudo_local.touchIdAuth = true;
   }
 ```
 
