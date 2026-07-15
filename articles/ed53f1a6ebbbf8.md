@@ -69,7 +69,7 @@ note: hard linking is currently saving 1.6 GiB
 
 https://github.com/nix-community/nh
 
-nh は、Ni、home manager などで利用するコマンドを、統一的なインターフェースで扱えるようにする CLI ツールです。
+nh は、Nix、home manager などで利用するコマンドを、統一的なインターフェースで扱えるようにする CLI ツールです。
 
 ビルド結果の表示や世代管理など複数の機能がありますが、**本記事では不要なデータを削除する `nh clean` のみを扱います**。
 `nh clean` は `nix-collect-garbage` 相当の処理に加え、GC root の整理、削除条件の細かい指定が可能です。
@@ -87,7 +87,6 @@ nh clean all
 :::
 
 `nh clean all` では、直近に使っていた開発環境のキャッシュも消えてしまうので不便です。
-
 以下のように削除範囲を絞るのが実用的だと思います。
 
 ```zsh:zsh
@@ -95,7 +94,6 @@ nh clean all --keep-since 30d --keep-one
 ```
 
 直近 30 日は残す、home manager 等の profile は直近 1 世代だけ残す、という挙動になります。
-
 他にも `nh clean all --help` で多くのオプションが確認できたので、細かい調整もできそうです。
 
 
