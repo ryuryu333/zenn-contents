@@ -122,7 +122,7 @@ devShell の shellHook に CSS 配置処理を書くのも手だと思います�
 
 
 ## CSS 指定のフォントについて
-CSS 側で指定されたフォントを使う場合、devShell にて環境変巣 `FONTCONFIG_FILE` を定義する必要があります。
+CSS 側で指定されたフォントを使う場合、devShell にて環境変数 `FONTCONFIG_FILE` を定義する必要があります。
 
 ```nix:flake.nix
   devShell = ...
