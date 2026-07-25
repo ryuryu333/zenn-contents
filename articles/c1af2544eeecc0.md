@@ -1,12 +1,11 @@
 ---
-title: "Marp の外部 CSS を手動管理せずに宣言的に管理する"
+title: "Marp の外部 CSS を宣言的に管理する"
 emoji: "🦉"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [nix, marp]
-published: false
+published: true
+published_at: "2026-07-25 07:00"
 ---
-
-<!-- cspell:ignore marprc readlink xnldd dflmf xnvjp igam ogam -->
 
 # はじめに
 Marp で外部 CSS（テーマ）を使う場合、通常はローカルに CSS をダウンロードする必要があります。
@@ -24,6 +23,7 @@ Private リポジトリであれば、CSS を Git 管理すれば解決できま
 ----
 
 実際に利用しているリポジトリはこちらです。
+記事中のコード例はイメージですので、詳細はこちらをご確認ください。
 
 https://github.com/ryuryu333/slide
 
@@ -120,8 +120,9 @@ theme: dracula
 devShell の shellHook に CSS 配置処理を書くのも手だと思います。
 毎回無駄な処理が走るのは嫌なので、明示的に配置・更新する運用にしました。
 
-## フォント
-CSS 側で指定されたフォントを使う場合、devShell にて `FONTCONFIG_FILE` でフォントを用意する必要があります。
+
+## CSS 指定のフォントについて
+CSS 側で指定されたフォントを使う場合、devShell にて環境変巣 `FONTCONFIG_FILE` を定義する必要があります。
 
 ```nix:flake.nix
   devShell = ...
