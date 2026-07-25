@@ -5,6 +5,7 @@
   },
   "rules": {
     "preset-ja-spacing": {
+      "ja-space-around-code": false,
       "ja-space-between-half-and-full-width": {
         "space": "always"
       }
